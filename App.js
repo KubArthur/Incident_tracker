@@ -1,9 +1,9 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LogPage from "./components/Pages/LogPage";
-import FormPage from "./components/Pages/FormPage";
-import HomePage from "./components/Pages/HomePage";
+import LogScreen from "./src/LogScreen";
+import FormScreen from "./src/FormScreen";
+import HomeScreen from "./src/HomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,17 +13,17 @@ function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
-          component={HomePage}
+          component={HomeScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Log"
-          component={LogPage}
+          component={LogScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Form"
-          component={FormPage}
+          component={FormScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

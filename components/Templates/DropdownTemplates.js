@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import Icon from "../Templates/IconTemplates";
 import Dropdown from "react-native-input-select";
 
 export default function DropdownTemplates({ theme }) {

@@ -6,19 +6,19 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import Button from "../Templates/ButtonTemplates";
+import Button from "../components/templates/ButtonTemplates";
 
 export default function HomePage({ navigation }) {
   return (
     <ImageBackground
-      source={require("../../assets/map_hulluch.jpg")} // Provide the path to your local image
+      source={require("../assets/map_hulluch.jpg")} // Provide the path to your local image
       style={styles.container}
     >
       <View style={styles.overlay}>
         <View style={styles.interface}>
           <Image
             style={styles.image}
-            source={require("../../assets/logo_hulluch.png")} // Provide the path to your local image
+            source={require("../assets/logo_hulluch.png")} // Provide the path to your local image
           />
           <Button
             theme="main"
@@ -53,14 +53,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 15, 0.8)", // Adjust opacity as needed
   },
   interface: {
-    margin: 205,
+    margin: 160,
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
   },
   image: {
-    width: 175, // Adjust the dimensions as needed
-    height: 50,
+    width: 160, // Adjust the dimensions as needed
+    height: 113,
     margin: 10,
   },
 });

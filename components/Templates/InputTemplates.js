@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { View, TextInput, StyleSheet, ImageBackground } from "react-native";
-export default function InputTemplates({ placeholder }) {
-  const [text1, setText1] = useState("");
+import { TextInput, StyleSheet } from "react-native";
 
-  const handleTextChange1 = (text) => {
-    setText1(text);
+export default function InputTemplates({ placeholder, onChangeText }) {
+  const [value, setValue] = useState("");
+
+  const handleTextChange = (text) => {
+    setValue(text);
+    if (onChangeText) {
+      onChangeText(text);
+    }
   };
 
   return (
@@ -12,8 +16,8 @@ export default function InputTemplates({ placeholder }) {
       style={styles.input}
       placeholder={placeholder}
       placeholderTextColor="white" // Couleur blanche
-      value={text1}
-      onChangeText={handleTextChange1}
+      value={value}
+      onChangeText={handleTextChange}
     />
   );
 }

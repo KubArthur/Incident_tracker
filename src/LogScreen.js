@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import Icon from "../Templates/IconTemplates";
+import Icon from "../components/templates/IconTemplates";
 
 export default function LogPage({ navigation }) {
   return (
