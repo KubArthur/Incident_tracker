@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import Dropdown from "../components/templates/DropdownTemplates";
@@ -6,24 +6,60 @@ import Input from "../components/templates/InputTemplates";
 import Button from "../components/templates/ButtonTemplates";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
+import {
+  requestForegroundPermissionsAsync,
+  getCurrentPositionAsync,
+} from "expo-location";
 
 export default function FormPage({ navigation }) {
+  const [pickerValue, setPickerValue] = useState("");
   const [inputValues, setInputValues] = useState("");
+  const [location, setLocation] = useState(null);
 
-  const handleTextInputChange = (key, text) => {
-    setInputValues((prevValues) => ({
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // Les mois commencent à 0 (janvier)
+  const day = currentDate.getDate();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+
+  const code = `${hours}${minutes}${day}${month}${year}`;
+
+  const handlePickerChange = (text) => {
+    setPickerValue((prevValues) => ({
       ...prevValues,
-      [key]: text,
+      text,
     }));
-
-    console.log("Valeurs des inputs:", inputValues);
   };
 
+  const handleTextInputChange = (key, value) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [key]: value,
+    }));
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        navigation.navigate("Home");
+        return;
+      }
+
+      const location = await getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
   const addDataOn = () => {
-    set(ref(db, "posts/" + "1"), {
+    set(ref(db, "posts/" + "incidents/" + code), {
+      type: pickerValue,
+      date: `${day}/${month}/${year}`,
+      location: location,
       inputValues: inputValues,
     });
-    setInputValues("");
   };
 
   return (
@@ -34,7 +70,10 @@ export default function FormPage({ navigation }) {
       <View style={styles.overlay}>
         <View style={styles.interface}>
           <Icon theme="home" onPress={() => navigation.navigate("Home")} />
-          <Dropdown theme="form" />
+          <Dropdown
+            theme="incidentDropdown"
+            onChangePicker={(value) => handlePickerChange(value)}
+          />
           <View style={styles.separator} />
           <Input
             placeholder="Input 1"
@@ -46,11 +85,7 @@ export default function FormPage({ navigation }) {
           />
           <View style={styles.separator} />
           <View style={styles.fixToText}>
-            <Button
-              theme="second"
-              onPress={addDataOn}
-              label="Envoyer"
-            />
+            <Button theme="second" onPress={addDataOn} label="Envoyer" />
             <Button
               theme="second"
               onPress={() => navigation.navigate("Home")}
