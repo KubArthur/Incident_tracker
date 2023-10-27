@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dropdown from "react-native-input-select";
 
-export default function DropdownTemplates({ theme, onChangePicker }) {
+export default function DropdownTemplates({ theme, onChangePicker, options }) {
   const [typeIncident, setTypeIncident] = useState();
 
   const handlePickerChange = (value) => {
-    
     if (onChangePicker) {
       onChangePicker(value);
     }
@@ -14,10 +13,10 @@ export default function DropdownTemplates({ theme, onChangePicker }) {
   return theme === "incidentDropdown" ? (
     <Dropdown
       placeholder="Le type d'incident..."
-      options={[
-        { label: "Problème d'ampoule", value: "Problème d'ampoule" },
-        { label: "Inondation", value: "Inondation" },
-      ]}
+      options={options.map((option) => ({
+        label: option,
+        value: option,
+      }))}
       selectedValue={typeIncident}
       onValueChange={(value) => {
         setTypeIncident(value);

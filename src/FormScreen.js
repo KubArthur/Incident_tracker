@@ -10,26 +10,37 @@ import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
 } from "expo-location";
+import { onValue } from "firebase/database";
+
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = currentDate.getMonth() + 1; // Les mois commencent à 0 (janvier)
+const day = currentDate.getDate();
+const hours = currentDate.getHours();
+const minutes = currentDate.getMinutes();
+const seconds = currentDate.getSeconds();
+const code = `${hours}${minutes}${day}${month}${year}${seconds}`;
 
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
   const [inputValues, setInputValues] = useState("");
   const [location, setLocation] = useState(null);
-
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1; // Les mois commencent à 0 (janvier)
-  const day = currentDate.getDate();
-  const hours = currentDate.getHours();
-  const minutes = currentDate.getMinutes();
-
-  const code = `${hours}${minutes}${day}${month}${year}`;
+  const [uniqueTypes, setUniqueTypes] = useState([]);
+  const [todoData, setTodoData] = useState([]);
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
       ...prevValues,
       text,
     }));
+
+    todoData.forEach((item) => {
+      Object.values(item).forEach((subItem) => {
+        if (subItem.type === pickerValue.text) {
+          console.log("Ramsey => " + pickerValue.text);
+        }
+      });
+    });
   };
 
   const handleTextInputChange = (key, value) => {
@@ -53,14 +64,70 @@ export default function FormPage({ navigation }) {
     })();
   }, []);
 
+  useEffect(() => {
+    const starCountRef = ref(db, "config/");
+
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      const todoData = Object.keys(data).map((key) => ({
+        id: key,
+        ...data[key],
+      }));
+
+      const types = todoData.map((item) => {
+        return Object.values(item).map((subItem) => {
+          if (subItem && subItem.type) {
+            return subItem.type;
+          }
+          return null;
+        });
+      });
+
+      const flatTypes = types.flat(); // Aplatit le tableau
+      const filteredTypes = [...new Set(flatTypes)];
+      const uniqueTypes = filteredTypes.filter((type) => type !== null);
+
+      setTodoData(todoData);
+      setUniqueTypes(uniqueTypes);
+    });
+  }, []);
+
   const addDataOn = () => {
-    set(ref(db, "posts/" + "incidents/" + code), {
+    set(ref(db, "reports/" + "incidents/" + code), {
       type: pickerValue,
       date: `${day}/${month}/${year}`,
       location: location,
       inputValues: inputValues,
     });
   };
+
+  let conditionalInputs = [];
+
+  todoData.forEach((item) => {
+    Object.values(item).forEach((subItem) => {
+      if (subItem.type === pickerValue.text) {
+        const dataString = subItem.data;
+
+        if (dataString) {
+          // Vérifier si dataString est défini
+          const parts = dataString.split(";");
+
+          parts.forEach((part, index) => {
+            const placeholder = part.trim();
+            conditionalInputs.push(
+              <Input
+                key={placeholder}
+                placeholder={placeholder}
+                onChangeText={(text) =>
+                  handleTextInputChange(key, text)
+                }
+              />
+            );
+          });
+        }
+      }
+    });
+  });
 
   return (
     <ImageBackground
@@ -73,16 +140,12 @@ export default function FormPage({ navigation }) {
           <Dropdown
             theme="incidentDropdown"
             onChangePicker={(value) => handlePickerChange(value)}
+            options={uniqueTypes} // Utilisez le tableau d'options mis à jour
           />
           <View style={styles.separator} />
-          <Input
-            placeholder="Input 1"
-            onChangeText={(text) => handleTextInputChange("a", text)}
-          />
-          <Input
-            placeholder="Input 2"
-            onChangeText={(text) => handleTextInputChange("b", text)}
-          />
+
+          {conditionalInputs}
+
           <View style={styles.separator} />
           <View style={styles.fixToText}>
             <Button theme="second" onPress={addDataOn} label="Envoyer" />
