@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextInput, StyleSheet } from "react-native";
 
-export default function InputTemplates({ placeholder, onChangeText }) {
+export default function InputTemplates({ placeholder, onChangeText, tag }) {
   const [value, setValue] = useState("");
 
   const handleTextChange = (text) => {
@@ -18,6 +18,7 @@ export default function InputTemplates({ placeholder, onChangeText }) {
       placeholderTextColor="white" // Couleur blanche
       value={value}
       onChangeText={handleTextChange}
+      editable={tag}
     />
   );
 }

@@ -12,35 +12,29 @@ import {
 } from "expo-location";
 import { onValue } from "firebase/database";
 
-const currentDate = new Date();
-const year = currentDate.getFullYear();
-const month = currentDate.getMonth() + 1; // Les mois commencent à 0 (janvier)
-const day = currentDate.getDate();
-const hours = currentDate.getHours();
-const minutes = currentDate.getMinutes();
-const seconds = currentDate.getSeconds();
-const code = `${hours}${minutes}${day}${month}${year}${seconds}`;
-
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
   const [inputValues, setInputValues] = useState("");
   const [location, setLocation] = useState(null);
   const [uniqueTypes, setUniqueTypes] = useState([]);
   const [todoData, setTodoData] = useState([]);
+  const [bascule, setBascule] = useState(0);
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1; // Les mois commencent à 0 (janvier)
+  const day = currentDate.getDate();
+  const hours = currentDate.getHours();
+  const minutes = currentDate.getMinutes();
+  const seconds = currentDate.getSeconds();
+  const code = `${hours}${minutes}${day}${month}${year}${seconds}`;
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
       ...prevValues,
       text,
     }));
-
-    todoData.forEach((item) => {
-      Object.values(item).forEach((subItem) => {
-        if (subItem.type === pickerValue.text) {
-          console.log("Ramsey => " + pickerValue.text);
-        }
-      });
-    });
+    const bascule = 1;
+    setBascule(bascule);
   };
 
   const handleTextInputChange = (key, value) => {
@@ -59,7 +53,8 @@ export default function FormPage({ navigation }) {
         return;
       }
 
-      const location = await getCurrentPositionAsync({});
+      let location = await getCurrentPositionAsync({});
+      location = location.coords.latitude + ";" + location.coords.longitude;
       setLocation(location);
     })();
   }, []);
@@ -86,18 +81,18 @@ export default function FormPage({ navigation }) {
       const flatTypes = types.flat(); // Aplatit le tableau
       const filteredTypes = [...new Set(flatTypes)];
       const uniqueTypes = filteredTypes.filter((type) => type !== null);
-
-      setTodoData(todoData);
+      
       setUniqueTypes(uniqueTypes);
     });
   }, []);
 
   const addDataOn = () => {
-    set(ref(db, "reports/" + "incidents/" + code), {
-      type: pickerValue,
+    set(ref(db, "reports/" + code), {
+      type: pickerValue.text,
       date: `${day}/${month}/${year}`,
       location: location,
       inputValues: inputValues,
+      read: "false"
     });
   };
 
@@ -107,11 +102,9 @@ export default function FormPage({ navigation }) {
     Object.values(item).forEach((subItem) => {
       if (subItem.type === pickerValue.text) {
         const dataString = subItem.data;
-
         if (dataString) {
           // Vérifier si dataString est défini
           const parts = dataString.split(";");
-
           parts.forEach((part, index) => {
             const placeholder = part.trim();
             conditionalInputs.push(
@@ -119,7 +112,7 @@ export default function FormPage({ navigation }) {
                 key={placeholder}
                 placeholder={placeholder}
                 onChangeText={(text) =>
-                  handleTextInputChange(key, text)
+                  handleTextInputChange(placeholder, text)
                 }
               />
             );
@@ -143,10 +136,18 @@ export default function FormPage({ navigation }) {
             options={uniqueTypes} // Utilisez le tableau d'options mis à jour
           />
           <View style={styles.separator} />
+          {pickerValue.text === null || bascule === 0 ? (
+            <Input
+              key="default"
+              placeholder="Choisir type"
+              onChangeText={(text) => handleTextInputChange("default", text)}
+              tag={true}
+            />
+          ) : (
+            conditionalInputs
+          )}
 
-          {conditionalInputs}
-
-          <View style={styles.separator} />
+          <View style={styles.separator}/>
           <View style={styles.fixToText}>
             <Button theme="second" onPress={addDataOn} label="Envoyer" />
             <Button
@@ -164,25 +165,36 @@ export default function FormPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
     alignItems: "center",
+    justifyContent: "center",
   },
   overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 15, 0.8)", // Adjust opacity as needed
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 15, 0.8)",
   },
   interface: {
-    margin: 179,
-    alignItems: "center",
+    flex: 1,
+    marginBottom: 60,
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   separator: {
-    borderBottomWidth: 1, // Épaisseur du trait
-    borderBottomColor: "white", // Couleur du trait (ici, blanche)
-    width: 220, // Largeur du trait (ajustez selon vos besoins)
-    marginBottom: 20, // Espacement entre les `<TextInput />` et le trait
     marginTop: 10,
+    marginBottom: 20,
+    width: 220,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
   },
   fixToText: {
     flexDirection: "row",

@@ -45,22 +45,33 @@ export default function HomePage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 15, 0.8)", // Adjust opacity as needed
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 15, 0.8)",
   },
   interface: {
-    margin: 160,
-    alignItems: "center",
+    flex: 1,
     display: "flex",
+    marginBottom: 60,
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
-    width: 160, // Adjust the dimensions as needed
-    height: 113,
     margin: 10,
+    width: 160,
+    height: 113,
   },
 });

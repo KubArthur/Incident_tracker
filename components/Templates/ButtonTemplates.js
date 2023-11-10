@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     width: 100,
   },
   bn36: {
-    borderColor: "white",
     borderWidth: 2,
+    borderColor: "white",
   },
   buttonMainText: {
     fontWeight: "400",
