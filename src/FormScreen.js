@@ -10,23 +10,19 @@ import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
 } from "expo-location";
-import { onValue } from "firebase/database";
+import { format, addSeconds } from "date-fns";
+import useConfigTypes from "../components/db/ConfigTypes";
 
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
   const [inputValues, setInputValues] = useState("");
   const [location, setLocation] = useState(null);
-  const [uniqueTypes, setUniqueTypes] = useState([]);
-  const [todoData, setTodoData] = useState([]);
   const [bascule, setBascule] = useState(0);
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1; // Les mois commencent à 0 (janvier)
-  const day = currentDate.getDate();
-  const hours = currentDate.getHours();
-  const minutes = currentDate.getMinutes();
-  const seconds = currentDate.getSeconds();
-  const code = `${hours}${minutes}${day}${month}${year}${seconds}`;
+
+  const code = format(new Date(), "HHmmddMMyyyyss");
+  const date = format(new Date(), "dd/MM/yyyy");
+
+  const { typeData, todoData } = useConfigTypes();
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -59,41 +55,15 @@ export default function FormPage({ navigation }) {
     })();
   }, []);
 
-  useEffect(() => {
-    const starCountRef = ref(db, "config/");
-
-    onValue(starCountRef, (snapshot) => {
-      const data = snapshot.val();
-      const todoData = Object.keys(data).map((key) => ({
-        id: key,
-        ...data[key],
-      }));
-
-      const types = todoData.map((item) => {
-        return Object.values(item).map((subItem) => {
-          if (subItem && subItem.type) {
-            return subItem.type;
-          }
-          return null;
-        });
-      });
-
-      const flatTypes = types.flat(); // Aplatit le tableau
-      const filteredTypes = [...new Set(flatTypes)];
-      const uniqueTypes = filteredTypes.filter((type) => type !== null);
-      
-      setUniqueTypes(uniqueTypes);
-    });
-  }, []);
-
   const addDataOn = () => {
     set(ref(db, "reports/" + code), {
       type: pickerValue.text,
-      date: `${day}/${month}/${year}`,
+      date: date,
       location: location,
       inputValues: inputValues,
-      read: "false"
+      read: "false",
     });
+    navigation.navigate("Home");
   };
 
   let conditionalInputs = [];
@@ -133,7 +103,7 @@ export default function FormPage({ navigation }) {
           <Dropdown
             theme="incidentDropdown"
             onChangePicker={(value) => handlePickerChange(value)}
-            options={uniqueTypes} // Utilisez le tableau d'options mis à jour
+            options={typeData} // Utilisez le tableau d'options mis à jour
           />
           <View style={styles.separator} />
           {pickerValue.text === null || bascule === 0 ? (
@@ -147,7 +117,7 @@ export default function FormPage({ navigation }) {
             conditionalInputs
           )}
 
-          <View style={styles.separator}/>
+          <View style={styles.separator} />
           <View style={styles.fixToText}>
             <Button theme="second" onPress={addDataOn} label="Envoyer" />
             <Button
