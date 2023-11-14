@@ -1,24 +1,23 @@
 import React from "react";
-import {
-  StatusBar,
-  ImageBackground,
-  View,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { StatusBar, ImageBackground, View, StyleSheet, Image, BackHandler } from "react-native";
 import Button from "../components/templates/ButtonTemplates";
 
+
 export default function HomePage({ navigation }) {
+  const handleCloseApp = () => {
+    BackHandler.exitApp();
+  };
+
   return (
     <ImageBackground
-      source={require("../assets/map_hulluch.jpg")} // Provide the path to your local image
+      source={require("../assets/map_hulluch.jpg")}
       style={styles.container}
     >
       <View style={styles.overlay}>
         <View style={styles.interface}>
           <Image
             style={styles.image}
-            source={require("../assets/logo_hulluch.png")} // Provide the path to your local image
+            source={require("../assets/logo_hulluch.png")}
           />
           <Button
             theme="main"
@@ -33,7 +32,7 @@ export default function HomePage({ navigation }) {
           <Button
             theme="main"
             label="Fermer l'application"
-            onPress={() => navigation.navigate("Shutdown")}
+            onPress={handleCloseApp}
           />
         </View>
       </View>

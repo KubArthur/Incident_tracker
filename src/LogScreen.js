@@ -9,9 +9,10 @@ import { ref, set } from "firebase/database";
 import useConfigTypes from "../components/db/ConfigTypes";
 import customMapStyle from "../components/templates/MapTemplate";
 import useTodoCheck from "../components/db/Reports";
+import FadeInView from "../components/effects/Fade";
 
 export default function LogPage({ navigation }) {
-  const [calloutVisible, setCalloutVisible] = useState(false);
+  const [calloutBox, setCalloutBox] = useState(false);
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [pickerValue, setPickerValue] = useState("");
   const { typeData } = useConfigTypes();
@@ -25,13 +26,15 @@ export default function LogPage({ navigation }) {
   };
 
   const handleMarkerPress = (markerId) => {
-    setCalloutVisible(true);
+    setCalloutBox(true);
     setSelectedMarkerId(markerId);
   };
 
   const upData = () => {
     set(ref(db, `reports/${selectedMarkerId}/read`), true);
   };
+
+  console.log(todoCheck);
 
   return (
     <View style={styles.container}>
@@ -84,12 +87,19 @@ export default function LogPage({ navigation }) {
               );
             })}
         </MapView>
-        {calloutVisible === false || selectedMarkerId === null ? (
-          <View style={styles.calloutBoxInvisible}></View>
+
+        {todoCheck.length === 0 ? (
+          <View style={styles.calloutBoxNoReport}>
+            <Text style={styles.dataBox}>Aucune donnée disponible</Text>
+          </View>
+        ) : calloutBox === false || selectedMarkerId === null ? (
+          <View style={styles.calloutBoxDefault}>
+            <Text style={styles.dataBox}>Veuillez sélectionner une donnée</Text>
+          </View>
         ) : (
           <View
             style={{
-              ...styles.calloutBox,
+              ...styles.calloutBoxReport,
               height:
                 Object.keys(
                   todoCheck.filter((item) => item.id === selectedMarkerId)[0]
@@ -105,42 +115,50 @@ export default function LogPage({ navigation }) {
                   : 155,
             }}
           >
-            {todoCheck
-              .filter((item) => item.id === selectedMarkerId)
-              .map((item) => (
-                <View key={item.id}>
-                  <Text style={styles.titleBox}>
-                    {item.type}, {item.date}
-                  </Text>
-                  {Object.keys(item.inputValues).map((key) => (
-                    <Text style={styles.dataBox} key={key}>
-                      {key}: {item.inputValues[key]}
+            <FadeInView key={selectedMarkerId + "B0"}>
+              {todoCheck
+                .filter((item) => item.id === selectedMarkerId)
+                .map((item) => (
+                  <View key={item.id}>
+                    <Text style={styles.titleBox}>
+                      {item.type}, {item.date}
                     </Text>
-                  ))}
-                </View>
-              ))}
-            <View style={styles.bottomButton}>
-              <Button
-                theme="second"
-                label="archiver"
-                onPress={() => {
-                  upData();
-                  setCalloutVisible(false);
-                }}
-              ></Button>
-            </View>
+                    {Object.keys(item.inputValues).map((key) => (
+                      <Text style={styles.dataBox} key={key}>
+                        {key}: {item.inputValues[key]}
+                      </Text>
+                    ))}
+                  </View>
+                ))}
+            </FadeInView>
+            <FadeInView key={selectedMarkerId + "B1"}>
+              <View style={styles.bottomButton}>
+                <Button
+                  theme="second"
+                  label="archiver"
+                  onPress={() => {
+                    upData();
+                    setCalloutBox(false);
+                  }}
+                />
+              </View>
+            </FadeInView>
           </View>
         )}
       </View>
+
       <View style={styles.headContainer}>
-        <View style={styles.head}>
-          <Icon theme="home" onPress={() => navigation.navigate("Home")} />
-          <Dropdown
-            theme="incidentDropdown"
-            onChangePicker={(value) => handlePickerChange(value)}
-            options={typeData} // Utilisez le tableau d'options mis à jour
-          />
-        </View>
+        <FadeInView key="H0">
+          <View style={styles.head}>
+            <Icon theme="home" onPress={() => navigation.navigate("Home")} />
+            <Dropdown
+              theme="incidentDropdown"
+              onChangePicker={(value) => handlePickerChange(value)}
+              options={typeData} // Utilisez le tableau d'options mis à jour
+              setValue={pickerValue}
+            />
+          </View>
+        </FadeInView>
       </View>
     </View>
   );
@@ -172,7 +190,7 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  calloutBox: {
+  calloutBoxReport: {
     position: "absolute",
     bottom: 0,
     left: 0,
@@ -196,15 +214,27 @@ const styles = StyleSheet.create({
   bottomButton: {
     marginTop: 15,
   },
-  calloutBoxInvisible: {
+  calloutBoxDefault: {
     position: "absolute",
     bottom: 0,
     left: 0,
-    height: 30,
+    height: 60,
     right: 0,
     padding: 10,
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 10, 1)",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  calloutBoxNoReport: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    height: 60,
+    right: 0,
+    padding: 10,
+    alignItems: "center",
+    backgroundColor: "rgba(0, 100, 10, 0.5)",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },

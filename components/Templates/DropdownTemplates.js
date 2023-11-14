@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, Image } from "react";
 import Dropdown from "react-native-input-select";
 
-export default function DropdownTemplates({ theme, onChangePicker, options }) {
-  const [typeIncident, setTypeIncident] = useState();
+export default function DropdownTemplates({
+  theme,
+  onChangePicker,
+  options,
+  setValue,
+}) {
+  const [typeIncident, setTypeIncident] = useState(setValue.text);
 
   const handlePickerChange = (value) => {
     if (onChangePicker) {
@@ -12,7 +17,7 @@ export default function DropdownTemplates({ theme, onChangePicker, options }) {
 
   return theme === "incidentDropdown" ? (
     <Dropdown
-      placeholder="Le type d'incident..."
+      placeholder="Sélectionner un incident"
       options={options.map((option) => ({
         label: option,
         value: option,
@@ -32,8 +37,13 @@ export default function DropdownTemplates({ theme, onChangePicker, options }) {
         borderRadius: 6,
         borderWidth: 2,
       }}
-      dropdownIconStyle={{ top: 15, right: 10, color: "white" }}
+      dropdownIconStyle={{ top: -100, right: -100 }}
       dropdownContainerStyle={{ marginBottom: 10, width: 220 }}
+      modalOptionsContainerStyle={{
+        padding: 10,
+        paddingBottom: 10,
+        backgroundColor: "black",
+      }}
       modalBackgroundStyle={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
@@ -46,6 +56,15 @@ export default function DropdownTemplates({ theme, onChangePicker, options }) {
         color: "white",
         fontSize: 18,
         fontWeight: "400",
+      }}
+      checkboxComponentStyles={{
+        checkboxSize: 10,
+        checkboxStyle: {
+          backgroundColor: "deepskyblue",
+          borderRadius: 30, // To get a circle - add the checkboxSize and the padding size
+          padding: 5,
+        },
+        checkboxLabelStyle: { color: "white", fontSize: 20 },
       }}
     />
   ) : null;

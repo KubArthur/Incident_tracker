@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ImageBackground } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, ImageBackground, Animated } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import Dropdown from "../components/templates/DropdownTemplates";
 import Input from "../components/templates/InputTemplates";
@@ -12,6 +12,7 @@ import {
 } from "expo-location";
 import { format, addSeconds } from "date-fns";
 import useConfigTypes from "../components/db/ConfigTypes";
+import FadeInView from "../components/effects/Fade";
 
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
@@ -19,7 +20,7 @@ export default function FormPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [bascule, setBascule] = useState(0);
 
-  const code = format(new Date(), "HHmmddMMyyyyss");
+  const code = format(new Date(), "ddMMyyyyHHmmss");
   const date = format(new Date(), "dd/MM/yyyy");
 
   const { typeData, todoData } = useConfigTypes();
@@ -42,20 +43,35 @@ export default function FormPage({ navigation }) {
 
   useEffect(() => {
     (async () => {
-      const { status } = await requestForegroundPermissionsAsync();
-
-      if (status !== "granted") {
+      try {
+        let location = await getCurrentPositionAsync({});
+        location = location.coords.latitude + ";" + location.coords.longitude;
+        setLocation(location);
+      } catch (error) {
+        console.error("Error getting location:", error);
         navigation.navigate("Home");
-        return;
       }
-
-      let location = await getCurrentPositionAsync({});
-      location = location.coords.latitude + ";" + location.coords.longitude;
-      setLocation(location);
     })();
   }, []);
 
   const addDataOn = () => {
+    // Vérifier si le champ pickerValue.text est vide
+    if (!pickerValue.text) {
+      alert("Sélectionnez un type d'incident.");
+      return;
+    }
+    // Vérifier si l'un des champs d'entrée est vide
+    if (!inputValues) {
+      alert("Assurez-vous que tous les champs d'entrée sont remplis.");
+      return;
+    }
+
+    // Vérifier si la localisation est disponible
+    if (!location) {
+      alert("Erreur de géolocalisation. Veuillez réessayer.");
+      return;
+    }
+
     set(ref(db, "reports/" + code), {
       type: pickerValue.text,
       date: date,
@@ -78,13 +94,15 @@ export default function FormPage({ navigation }) {
           parts.forEach((part, index) => {
             const placeholder = part.trim();
             conditionalInputs.push(
-              <Input
-                key={placeholder}
-                placeholder={placeholder}
-                onChangeText={(text) =>
-                  handleTextInputChange(placeholder, text)
-                }
-              />
+              <FadeInView key={pickerValue + placeholder}>
+                <Input
+                  key={placeholder}
+                  placeholder={placeholder}
+                  onChangeText={(text) =>
+                    handleTextInputChange(placeholder, text)
+                  }
+                />
+              </FadeInView>
             );
           });
         }
@@ -99,33 +117,38 @@ export default function FormPage({ navigation }) {
     >
       <View style={styles.overlay}>
         <View style={styles.interface}>
-          <Icon theme="home" onPress={() => navigation.navigate("Home")} />
-          <Dropdown
-            theme="incidentDropdown"
-            onChangePicker={(value) => handlePickerChange(value)}
-            options={typeData} // Utilisez le tableau d'options mis à jour
-          />
-          <View style={styles.separator} />
-          {pickerValue.text === null || bascule === 0 ? (
-            <Input
-              key="default"
-              placeholder="Choisir type"
-              onChangeText={(text) => handleTextInputChange("default", text)}
-              tag={true}
+          <FadeInView key={pickerValue.text + "I0"}>
+            <Icon theme="home" onPress={() => navigation.navigate("Home")} />
+          </FadeInView>
+          <FadeInView key={pickerValue.text + "H0"}>
+            <Dropdown
+              theme="incidentDropdown"
+              onChangePicker={(value) => handlePickerChange(value)}
+              options={typeData} // Utilisez le tableau d'options mis à jour
+              setValue={pickerValue}
             />
-          ) : (
-            conditionalInputs
+          </FadeInView>
+          {pickerValue.text === null || bascule === 0 ? null : (
+            <>
+              <FadeInView key={pickerValue.text + "S0"}>
+                <View style={styles.separator} />
+              </FadeInView>
+              {conditionalInputs}
+              <FadeInView key={pickerValue.text + "S1"}>
+                <View style={styles.separator} />
+              </FadeInView>
+              <FadeInView key={pickerValue.text + "B0"}>
+                <View style={styles.fixToText}>
+                  <Button theme="second" onPress={addDataOn} label="Envoyer" />
+                  <Button
+                    theme="second"
+                    onPress={() => navigation.navigate("Home")}
+                    label="Annuler"
+                  />
+                </View>
+              </FadeInView>
+            </>
           )}
-
-          <View style={styles.separator} />
-          <View style={styles.fixToText}>
-            <Button theme="second" onPress={addDataOn} label="Envoyer" />
-            <Button
-              theme="second"
-              onPress={() => navigation.navigate("Home")}
-              label="Annuler"
-            />
-          </View>
         </View>
       </View>
     </ImageBackground>
