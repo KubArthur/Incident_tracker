@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     margin: 8,
     borderRadius: 6,
     width: 220,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   buttonSecondContainer: {
     display: "flex",
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 6,
     width: 100,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   bn36: {
     borderWidth: 2,

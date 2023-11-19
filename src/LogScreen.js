@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  Modal,
+} from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import MapView, { Marker } from "react-native-maps";
 import Dropdown from "../components/templates/DropdownTemplates";
 import Button from "../components/templates/ButtonTemplates";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
-import useConfigTypes from "../components/db/ConfigTypes";
+import useConfigTypes from "../components/db/GetConfigTypes";
 import customMapStyle from "../components/templates/MapTemplate";
-import useTodoCheck from "../components/db/Reports";
+import useTodoCheck from "../components/db/GetReports";
 import FadeInView from "../components/effects/Fade";
 
 export default function LogPage({ navigation }) {
@@ -17,12 +25,19 @@ export default function LogPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
   const { typeData } = useConfigTypes();
   const { todoCheck } = useTodoCheck();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
       ...prevValues,
       text,
     }));
+  };
+
+  const handleImagePress = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalVisible(true);
   };
 
   const handleMarkerPress = (markerId) => {
@@ -33,8 +48,6 @@ export default function LogPage({ navigation }) {
   const upData = () => {
     set(ref(db, `reports/${selectedMarkerId}/read`), true);
   };
-
-  console.log(todoCheck);
 
   return (
     <View style={styles.container}>
@@ -105,14 +118,14 @@ export default function LogPage({ navigation }) {
                   todoCheck.filter((item) => item.id === selectedMarkerId)[0]
                     ?.inputValues || {}
                 ).length > 2
-                  ? 219
+                  ? 419
                   : Object.keys(
                       todoCheck.filter(
                         (item) => item.id === selectedMarkerId
                       )[0]?.inputValues || {}
                     ).length > 1
-                  ? 182
-                  : 155,
+                  ? 382
+                  : 355,
             }}
           >
             <FadeInView key={selectedMarkerId + "B0"}>
@@ -128,6 +141,15 @@ export default function LogPage({ navigation }) {
                         {key}: {item.inputValues[key]}
                       </Text>
                     ))}
+                    <TouchableOpacity
+                      key={item.id + "1"}
+                      onPress={() => handleImagePress(item.image)}
+                    >
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.image}
+                      />
+                    </TouchableOpacity>
                   </View>
                 ))}
             </FadeInView>
@@ -154,12 +176,31 @@ export default function LogPage({ navigation }) {
             <Dropdown
               theme="incidentDropdown"
               onChangePicker={(value) => handlePickerChange(value)}
-              options={typeData} // Utilisez le tableau d'options mis à jour
+              options={typeData}
               setValue={pickerValue}
             />
           </View>
         </FadeInView>
       </View>
+
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.fullScreenImage}
+          />
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={styles.closeText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -237,5 +278,26 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 100, 10, 0.5)",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  fullScreenImage: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeText: {
+    color: "#fff",
   },
 });

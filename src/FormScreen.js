@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, ImageBackground, Animated } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, ImageBackground } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import Dropdown from "../components/templates/DropdownTemplates";
 import Input from "../components/templates/InputTemplates";
 import Button from "../components/templates/ButtonTemplates";
-import { db } from "../config";
-import { ref, set } from "firebase/database";
-import {
-  requestForegroundPermissionsAsync,
-  getCurrentPositionAsync,
-} from "expo-location";
-import { format, addSeconds } from "date-fns";
-import useConfigTypes from "../components/db/ConfigTypes";
+import { getCurrentPositionAsync } from "expo-location";
+import { format } from "date-fns";
+import useConfigTypes from "../components/db/GetConfigTypes";
 import FadeInView from "../components/effects/Fade";
+import { sendDataToFirebase } from "../components/db/SendDataToFirebase";
 
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
@@ -24,6 +20,11 @@ export default function FormPage({ navigation }) {
   const date = format(new Date(), "dd/MM/yyyy");
 
   const { typeData, todoData } = useConfigTypes();
+
+  const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const [capturedImage, setCapturedImage] = useState(null);
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -41,46 +42,23 @@ export default function FormPage({ navigation }) {
     }));
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let location = await getCurrentPositionAsync({});
-        location = location.coords.latitude + ";" + location.coords.longitude;
-        setLocation(location);
-      } catch (error) {
-        console.error("Error getting location:", error);
-        navigation.navigate("Home");
-      }
-    })();
-  }, []);
-
-  const addDataOn = () => {
-    // Vérifier si le champ pickerValue.text est vide
-    if (!pickerValue.text) {
-      alert("Sélectionnez un type d'incident.");
-      return;
+  const updateLocation = async () => {
+    try {
+      let location = await getCurrentPositionAsync({});
+      location = location.coords.latitude + ";" + location.coords.longitude;
+      setLocation(location);
+    } catch (error) {
+      console.error("Error getting location:", error);
+      alert("As you wish!");
+      navigation.navigate("Home");
     }
-    // Vérifier si l'un des champs d'entrée est vide
-    if (!inputValues) {
-      alert("Assurez-vous que tous les champs d'entrée sont remplis.");
-      return;
-    }
-
-    // Vérifier si la localisation est disponible
-    if (!location) {
-      alert("Erreur de géolocalisation. Veuillez réessayer.");
-      return;
-    }
-
-    set(ref(db, "reports/" + code), {
-      type: pickerValue.text,
-      date: date,
-      location: location,
-      inputValues: inputValues,
-      read: "false",
-    });
-    navigation.navigate("Home");
   };
+
+  useEffect(() => {
+    updateLocation();
+    const intervalId = setInterval(updateLocation, 100);
+    return () => clearInterval(intervalId);
+  }, []);
 
   let conditionalInputs = [];
 
@@ -109,6 +87,20 @@ export default function FormPage({ navigation }) {
       }
     });
   });
+
+  const sendData = async () => {
+    sendDataToFirebase(
+      pickerValue,
+      inputValues,
+      location,
+      capturedImage,
+      code,
+      date,
+      navigation,
+      setUploading,
+      setImage
+    );
+  };
 
   return (
     <ImageBackground
@@ -139,12 +131,14 @@ export default function FormPage({ navigation }) {
               </FadeInView>
               <FadeInView key={pickerValue.text + "B0"}>
                 <View style={styles.fixToText}>
-                  <Button theme="second" onPress={addDataOn} label="Envoyer" />
                   <Button
                     theme="second"
-                    onPress={() => navigation.navigate("Home")}
-                    label="Annuler"
+                    onPress={() =>
+                      navigation.navigate("Camera", { setCapturedImage })
+                    }
+                    label="Camera"
                   />
+                  <Button theme="second" onPress={sendData} label="Envoyer" />
                 </View>
               </FadeInView>
             </>
@@ -185,7 +179,7 @@ const styles = StyleSheet.create({
   separator: {
     marginTop: 10,
     marginBottom: 20,
-    width: 220,
+    width: 200,
     borderBottomWidth: 1,
     borderBottomColor: "white",
   },

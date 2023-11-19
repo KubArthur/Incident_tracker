@@ -10,5 +10,13 @@ export default function IconTemplates({ theme, onPress }) {
       onPress={onPress}
       marginBottom={30}
     />
+  ) : theme === "flash" ? (
+    <Ionicons
+      name="flash"
+      size={36}
+      color="white"
+      onPress={onPress}
+      marginBottom={30}
+    />
   ) : null;
 }

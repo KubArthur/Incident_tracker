@@ -1,4 +1,4 @@
-import React, { useState, Image } from "react";
+import React, { useState } from "react";
 import Dropdown from "react-native-input-select";
 
 export default function DropdownTemplates({
