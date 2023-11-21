@@ -20,17 +20,17 @@ export default function HomePage({ navigation }) {
             source={require("../assets/logo_hulluch.png")}
           />
           <Button
-            theme="main"
+            theme="primary"
             label="Journal des incidents"
             onPress={() => navigation.navigate("Log")}
           />
           <Button
-            theme="main"
+            theme="primary"
             label="Remonter des incidents"
             onPress={() => navigation.navigate("Form")}
           />
           <Button
-            theme="main"
+            theme="primary"
             label="Fermer l'application"
             onPress={handleCloseApp}
           />
@@ -43,14 +43,8 @@ export default function HomePage({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    position: "absolute",
-    top: 0,
-    left: 0,
     width: "100%",
     height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
   },
   overlay: {
     position: "absolute",
@@ -62,9 +56,7 @@ const styles = StyleSheet.create({
   },
   interface: {
     flex: 1,
-    display: "flex",
     marginBottom: 60,
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },

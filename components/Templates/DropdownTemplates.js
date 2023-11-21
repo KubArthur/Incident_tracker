@@ -42,7 +42,7 @@ export default function DropdownTemplates({
       modalOptionsContainerStyle={{
         padding: 10,
         paddingBottom: 10,
-        backgroundColor: "black",
+        backgroundColor: "rgba(150, 150, 150, 1)",
       }}
       modalBackgroundStyle={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",

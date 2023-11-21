@@ -4,20 +4,20 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
-  Dimensions,
   Modal,
 } from "react-native";
 import Icon from "../components/templates/IconTemplates";
-import MapView, { Marker } from "react-native-maps";
+import MapView from "react-native-maps";
 import Dropdown from "../components/templates/DropdownTemplates";
-import Button from "../components/templates/ButtonTemplates";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
 import useConfigTypes from "../components/db/GetConfigTypes";
 import customMapStyle from "../components/templates/MapTemplate";
 import useTodoCheck from "../components/db/GetReports";
 import FadeInView from "../components/effects/Fade";
+import useMarkersRenderer from "../components/templates/MarkerTemplates";
+import CalloutBox from "../components/templates/ReportTemplates";
+import Button from "../components/templates/ButtonTemplates";
 
 export default function LogPage({ navigation }) {
   const [calloutBox, setCalloutBox] = useState(false);
@@ -49,123 +49,55 @@ export default function LogPage({ navigation }) {
     set(ref(db, `reports/${selectedMarkerId}/read`), true);
   };
 
+  const markersToRender = useMarkersRenderer(
+    todoCheck,
+    pickerValue,
+    handleMarkerPress
+  );
+
+  const handleScreenTouch = () => {
+    setSelectedMarkerId(null);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
           customMapStyle={customMapStyle}
+          toolbarEnabled={false}
+          showsUserLocation={false}
+          showsCompass={false}
           initialRegion={{
-            latitude: 50.4834252,
-            longitude: 2.8178466,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.02,
+            latitude: 50.48945067381617,
+            longitude: 2.8115017153322697,
+            latitudeDelta: 0.034087918155222496,
+            longitudeDelta: 0.026976652443408966,
           }}
         >
-          {todoCheck
-            .filter(
-              (item) => !pickerValue.text || item.type === pickerValue.text
-            ) // Filtre les marqueurs en fonction du type
-            .map((item) => {
-              let imageSource;
-
-              switch (item.type) {
-                case "Inondation":
-                  imageSource = require("../assets/pin_inondation.png");
-                  break;
-                case "Panne réseau":
-                  imageSource = require("../assets/pin_panne_reseau.png");
-                  break;
-                case "Voiture ventouse":
-                  imageSource = require("../assets/pin_voiture_ventouse.png");
-                  break;
-                // Ajoutez d'autres cas au besoin
-                default:
-                  imageSource = require("../assets/splash.png"); // Fichier par défaut
-              }
-
-              const location = item.location || ""; // Ajoutez cette ligne pour éviter le problème
-              const [latitude, longitude] = location.split(";");
-
-              return (
-                <Marker
-                  key={item.id}
-                  coordinate={{
-                    latitude: parseFloat(latitude),
-                    longitude: parseFloat(longitude),
-                  }}
-                  image={imageSource}
-                  onPress={() => handleMarkerPress(item.id)}
-                />
-              );
-            })}
+          {markersToRender}
         </MapView>
 
         {todoCheck.length === 0 ? (
-          <View style={styles.calloutBoxNoReport}>
-            <Text style={styles.dataBox}>Aucune donnée disponible</Text>
+          <View style={styles.calloutBox}>
+            <FadeInView key="C0">
+              <Text style={styles.dataBox}>Aucune nouvelle remontée !</Text>
+            </FadeInView>
           </View>
         ) : calloutBox === false || selectedMarkerId === null ? (
-          <View style={styles.calloutBoxDefault}>
-            <Text style={styles.dataBox}>Veuillez sélectionner une donnée</Text>
+          <View style={styles.calloutBox}>
+            <FadeInView key="C1">
+              <Text style={styles.dataBox}>Appuiyez sur un marker...</Text>
+            </FadeInView>
           </View>
         ) : (
-          <View
-            style={{
-              ...styles.calloutBoxReport,
-              height:
-                Object.keys(
-                  todoCheck.filter((item) => item.id === selectedMarkerId)[0]
-                    ?.inputValues || {}
-                ).length > 2
-                  ? 419
-                  : Object.keys(
-                      todoCheck.filter(
-                        (item) => item.id === selectedMarkerId
-                      )[0]?.inputValues || {}
-                    ).length > 1
-                  ? 382
-                  : 355,
-            }}
-          >
-            <FadeInView key={selectedMarkerId + "B0"}>
-              {todoCheck
-                .filter((item) => item.id === selectedMarkerId)
-                .map((item) => (
-                  <View key={item.id}>
-                    <Text style={styles.titleBox}>
-                      {item.type}, {item.date}
-                    </Text>
-                    {Object.keys(item.inputValues).map((key) => (
-                      <Text style={styles.dataBox} key={key}>
-                        {key}: {item.inputValues[key]}
-                      </Text>
-                    ))}
-                    <TouchableOpacity
-                      key={item.id + "1"}
-                      onPress={() => handleImagePress(item.image)}
-                    >
-                      <Image
-                        source={{ uri: item.image }}
-                        style={styles.image}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-            </FadeInView>
-            <FadeInView key={selectedMarkerId + "B1"}>
-              <View style={styles.bottomButton}>
-                <Button
-                  theme="second"
-                  label="archiver"
-                  onPress={() => {
-                    upData();
-                    setCalloutBox(false);
-                  }}
-                />
-              </View>
-            </FadeInView>
-          </View>
+          <CalloutBox
+            todoCheck={todoCheck}
+            selectedMarkerId={selectedMarkerId}
+            handleImagePress={handleImagePress}
+            upData={upData}
+            setCalloutBox={setCalloutBox}
+          />
         )}
       </View>
 
@@ -193,12 +125,13 @@ export default function LogPage({ navigation }) {
             source={{ uri: selectedImage }}
             style={styles.fullScreenImage}
           />
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setModalVisible(false)}
-          >
-            <Text style={styles.closeText}>Fermer</Text>
-          </TouchableOpacity>
+          <View style={styles.closeButton}>
+            <Button
+              label="Fermer"
+              theme="secondary_small"
+              onPress={() => setModalVisible(false)}
+            />
+          </View>
         </View>
       </Modal>
     </View>
@@ -220,7 +153,7 @@ const styles = StyleSheet.create({
     height: 165,
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
-    backgroundColor: "rgba(0, 0, 10, 1)",
+    backgroundColor: "rgba(0, 0, 15, 0.8)",
   },
   container: {
     flex: 1,
@@ -231,73 +164,38 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  calloutBoxReport: {
+  calloutBox: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     padding: 10,
+    height: 60,
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 10, 1)",
+    justifyContent: "center",
+    backgroundColor: "rgba(20, 20, 20, 1)",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-  titleBox: {
-    color: "white",
-    fontSize: 18,
-    padding: 4,
+  fullScreenImage: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "black",
+  },
+  closeButton: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    marginBottom: 65,
+    alignItems: "center",
+  },
+  closeText: {
+    color: "#fff",
   },
   dataBox: {
     color: "white",
     fontSize: 16,
     padding: 4,
-  },
-  bottomButton: {
-    marginTop: 15,
-  },
-  calloutBoxDefault: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    height: 60,
-    right: 0,
-    padding: 10,
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 10, 1)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  calloutBoxNoReport: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    height: 60,
-    right: 0,
-    padding: 10,
-    alignItems: "center",
-    backgroundColor: "rgba(0, 100, 10, 0.5)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 10,
-    borderRadius: 10,
-  },
-  fullScreenImage: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-  closeButton: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 10,
-    borderRadius: 5,
-  },
-  closeText: {
-    color: "#fff",
   },
 });

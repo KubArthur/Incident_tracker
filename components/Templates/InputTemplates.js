@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function InputTemplates({ placeholder, onChangeText, tag }) {
   const [value, setValue] = useState("");
@@ -12,14 +12,16 @@ export default function InputTemplates({ placeholder, onChangeText, tag }) {
   };
 
   return (
-    <TextInput
-      style={styles.input}
-      placeholder={placeholder}
-      placeholderTextColor="white" // Couleur blanche
-      value={value}
-      onChangeText={handleTextChange}
-      editable={tag}
-    />
+    <TouchableOpacity>
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="white" // Couleur blanche
+        value={value}
+        onChangeText={handleTextChange}
+        editable={tag}
+      />
+    </TouchableOpacity>
   );
 }
 

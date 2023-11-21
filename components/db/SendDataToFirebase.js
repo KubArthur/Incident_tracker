@@ -14,29 +14,42 @@ const sendDataToFirebase = async (
   image,
   code,
   date,
+  heure,
   navigation,
   setUploading,
-  setImage
+  setImage,
+  setPopupVisible,
+  setPopupText
 ) => {
   if (!pickerValue.text) {
-    alert("Sélectionnez un type d'incident.");
+    setPopupVisible(true);
+    setPopupText("Sélectionnez un type d'incident.");
     return;
   }
 
-  if (!inputValues) {
-    alert("Assurez-vous que tous les champs d'entrée sont remplis.");
+  const isEmpty = Object.values(inputValues).some((val) => val === "");
+
+  if (isEmpty) {
+    setPopupVisible(true);
+    setPopupText("Assurez-vous que tous les champs d'entrée sont remplis.");
     return;
   }
 
   if (!location) {
-    alert("Erreur de géolocalisation. Veuillez réessayer.");
+    alert(
+      "Erreur de géolocalisation. Veuillez réessayer en appuyant de nouveau sur Envoyer."
+    );
     return;
   }
 
   if (!image) {
-    alert("No photo.");
+    setPopupVisible(true);
+    setPopupText("Prenez une photo en appuyant Camera ");
     return;
   }
+
+  setPopupVisible(true);
+  setPopupText("Veuillez patienter pendant la remontée de l'incident au serveur. L'opération peut prendre quelques secondes. Une fois terminée, vous serez rédirigé sur la page d'accueil. ");
 
   try {
     setUploading(true);
@@ -70,6 +83,7 @@ const sendDataToFirebase = async (
     set(ref(db, "reports/" + code), {
       type: pickerValue.text,
       date: date,
+      heure: heure,
       location: location,
       inputValues: inputValues,
       image: downloadURL, // Ajouter le lien de téléchargement de l'image
@@ -78,7 +92,6 @@ const sendDataToFirebase = async (
 
     // Terminer le processus d'envoi
     setUploading(false);
-    alert("Photo envoyée avec succès!");
 
     // Réinitialiser l'état de l'image
     setImage(null);
