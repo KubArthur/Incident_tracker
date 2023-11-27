@@ -26,38 +26,44 @@ const CalloutBox = ({
             : Object.keys(item?.inputValues || {}).length > 2
             ? 247
             : Object.keys(item?.inputValues || {}).length > 1
-            ? 222
+            ? 232
             : 195,
       }}
     >
       <FadeInView key={selectedMarkerId}>
         {item && (
-          <View key={item.id}>
-            <Text style={styles.titleBox}>
-              {item.type}, {item.date}
+          <>
+            <Text style={styles.titleBox}>{item.type},</Text>
+            <Text style={styles.dataBox}>
+              à {item.heure} le {item.date}
             </Text>
+
             {Object.keys(item.inputValues).map((key) => (
               <Text style={styles.dataBox} key={key}>
                 {key}: {item.inputValues[key]}
               </Text>
             ))}
-            <View style={{ marginTop: 10 }}>
-              <Button
-                label="Ouvrir l'image"
-                theme="secondary_picture"
-                onPress={() => handleImagePress(item.image)}
-              />
+            <View style={styles.button}>
+              <View style={{ marginRight: 10 }}>
+                <Button
+                  label=""
+                  theme="secondary_picture"
+                  onPress={() => handleImagePress(item.image)}
+                />
+              </View>
+              <View style={{ marginLeft: 10 }}>
+                <Button
+                  theme="secondary_archive"
+                  label=""
+                  onPress={() => {
+                    upData();
+                    setCalloutBox(false);
+                  }}
+                />
+              </View>
             </View>
-          </View>
+          </>
         )}
-        <Button
-          theme="secondary_archive"
-          label="archiver"
-          onPress={() => {
-            upData();
-            setCalloutBox(false);
-          }}
-        />
       </FadeInView>
     </View>
   );
@@ -87,5 +93,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     padding: 4,
+    maxWidth: 300,
+  },
+  button: {
+    flexDirection: "row",
+    marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -19,7 +19,7 @@ export default function useMarkersRenderer(todoCheck, pickerValue, handleMarkerP
           imageSource = require("../../assets/car.png");
           break;
         default:
-          imageSource = require("../../assets/splash.png");
+          imageSource = require("../../assets/car.png");
       }
 
       const location = item.location || "";

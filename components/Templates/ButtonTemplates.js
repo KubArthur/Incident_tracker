@@ -86,30 +86,20 @@ export default function ButtonTemplates({ label, theme, onPress, icon }) {
   ) : theme === "secondary_archive" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
-      style={[styles.buttonContainer_m, styles.bn36]}
+      style={[styles.buttonContainer_s, styles.bn36]}
     >
-      <FontAwesome
-        name="archive"
-        size={18}
-        color="white"
-        style={styles.buttonIcon}
-      />
+      <FontAwesome name="archive" size={18} color="white" />
       <Text style={styles.label_m}>{label}</Text>
     </TouchableOpacity>
   ) : theme === "secondary_picture" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
-      style={[styles.buttonContainer_m, styles.bn36]}
+      style={[styles.buttonContainer_s, styles.bn36]}
     >
-      <FontAwesome
-        name="picture-o"
-        size={18}
-        color="white"
-        style={styles.buttonIcon}
-      />
+      <FontAwesome name="picture-o" size={18} color="white" />
       <Text style={styles.label_m}>{label}</Text>
     </TouchableOpacity>
-  ): null;
+  ) : null;
 }
 
 const styles = StyleSheet.create({

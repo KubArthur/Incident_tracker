@@ -27,7 +27,9 @@ const sendDataToFirebase = async (
     return;
   }
 
-  const isEmpty = Object.values(inputValues).some((val) => val === "");
+  const isEmpty = Object.entries(inputValues).some(([key, value]) => {
+    return key.endsWith("*") && value === "";
+  });
 
   if (isEmpty) {
     setPopupVisible(true);
@@ -36,7 +38,8 @@ const sendDataToFirebase = async (
   }
 
   if (!location) {
-    alert(
+    setPopupVisible(true);
+    setPopupText(
       "Erreur de géolocalisation. Veuillez réessayer en appuyant de nouveau sur Envoyer."
     );
     return;
@@ -49,7 +52,9 @@ const sendDataToFirebase = async (
   }
 
   setPopupVisible(true);
-  setPopupText("Veuillez patienter pendant la remontée de l'incident au serveur. L'opération peut prendre quelques secondes. Une fois terminée, vous serez rédirigé sur la page d'accueil. ");
+  setPopupText(
+    "traitement..."
+  );
 
   try {
     setUploading(true);

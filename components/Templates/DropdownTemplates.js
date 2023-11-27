@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Text } from "react-native";
 import Dropdown from "react-native-input-select";
 
 export default function DropdownTemplates({
@@ -6,6 +7,7 @@ export default function DropdownTemplates({
   onChangePicker,
   options,
   setValue,
+  placeholder,
 }) {
   const [typeIncident, setTypeIncident] = useState(setValue.text);
 
@@ -15,9 +17,9 @@ export default function DropdownTemplates({
     }
   };
 
-  return theme === "incidentDropdown" ? (
+  return theme === "default" ? (
     <Dropdown
-      placeholder="Sélectionner un incident"
+      placeholder={placeholder}
       options={options.map((option) => ({
         label: option,
         value: option,
@@ -27,6 +29,19 @@ export default function DropdownTemplates({
         setTypeIncident(value);
         handlePickerChange(value);
       }}
+      listHeaderComponent={
+        <Text
+          style={{
+            color: "deepskyblue",
+            fontSize: 22,
+            textAlign: "center",
+            marginBottom: 10,
+            fontWeight: "400",
+          }}
+        >
+          {placeholder}
+        </Text>
+      }
       primaryColor={"deepskyblue"}
       dropdownStyle={{
         backgroundColor: "none",

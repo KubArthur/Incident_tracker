@@ -34,7 +34,7 @@ const useConfigTypes = () => {
       setTodoData(todoData);
     });
   }, []);
-
+  
   return { typeData, todoData };
 };
 

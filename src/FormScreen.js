@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ImageBackground, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ImageBackground,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import Dropdown from "../components/templates/DropdownTemplates";
 import Input from "../components/templates/InputTemplates";
@@ -9,7 +16,8 @@ import { format } from "date-fns";
 import useConfigTypes from "../components/db/GetConfigTypes";
 import FadeInView from "../components/effects/Fade";
 import { sendDataToFirebase } from "../components/db/SendDataToFirebase";
-import Popup from "../components/templates/PopupTemplate";
+import Popup from "../components/templates/PopupTemplates";
+import DynamicFormInputs from "../components/templates/FormFieldsTemplates";
 
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
@@ -45,7 +53,10 @@ export default function FormPage({ navigation }) {
       ...prevValues,
       [key]: value,
     }));
-    console.log(inputValues);
+  };
+
+  const cancel = () => {
+    navigation.navigate("Home");
   };
 
   const updateLocation = async () => {
@@ -70,32 +81,6 @@ export default function FormPage({ navigation }) {
     const intervalId = setInterval(updateLocation, 2000);
     return () => clearInterval(intervalId);
   }, []);
-
-  let conditionalInputs = [];
-
-  todoData.forEach((item) => {
-    Object.values(item).forEach((subItem) => {
-      if (subItem.type === pickerValue.text) {
-        const dataString = subItem.data;
-        if (dataString) {
-          // Vérifier si dataString est défini
-          const parts = dataString.split(";");
-          parts.forEach((part, index) => {
-            const placeholder = part.trim();
-            conditionalInputs.push(
-              <Input
-                key={placeholder}
-                placeholder={placeholder}
-                onChangeText={(text) =>
-                  handleTextInputChange(placeholder, text)
-                }
-              />
-            );
-          });
-        }
-      }
-    });
-  });
 
   const sendData = async () => {
     sendDataToFirebase(
@@ -125,10 +110,12 @@ export default function FormPage({ navigation }) {
             <View style={styles.head}>
               <Icon theme="home" onPress={() => navigation.navigate("Home")} />
               <Dropdown
-                theme="incidentDropdown"
+                key="default-drop"
+                theme="default"
                 onChangePicker={(value) => handlePickerChange(value)}
                 options={typeData} // Utilisez le tableau d'options mis à jour
                 setValue={pickerValue}
+                placeholder="Sélectionner un incident"
               />
             </View>
           </FadeInView>
@@ -138,7 +125,11 @@ export default function FormPage({ navigation }) {
                 <View style={styles.body}>
                   <View style={styles.separator} />
 
-                  {conditionalInputs}
+                  <DynamicFormInputs
+                    pickerValue={pickerValue}
+                    handleTextInputChange={handleTextInputChange}
+                    data={todoData}
+                  />
 
                   <View style={styles.separator} />
 

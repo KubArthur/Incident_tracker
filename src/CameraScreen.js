@@ -27,7 +27,7 @@ export default function CameraScreen({ navigation, route }) {
     if (cameraRef) {
       try {
         const data = await cameraRef.current.takePictureAsync({
-          quality: 0.5,
+          quality: 0.3,
         });
         setImage(data.uri);
       } catch (error) {

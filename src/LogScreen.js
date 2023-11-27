@@ -87,7 +87,7 @@ export default function LogPage({ navigation }) {
         ) : calloutBox === false || selectedMarkerId === null ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C1">
-              <Text style={styles.dataBox}>Appuiyez sur un marker...</Text>
+              <Text style={styles.dataBox}>Press un marker...</Text>
             </FadeInView>
           </View>
         ) : (
@@ -106,10 +106,11 @@ export default function LogPage({ navigation }) {
           <View style={styles.head}>
             <Icon theme="home" onPress={() => navigation.navigate("Home")} />
             <Dropdown
-              theme="incidentDropdown"
+              theme="default"
               onChangePicker={(value) => handlePickerChange(value)}
               options={typeData}
               setValue={pickerValue}
+              placeholder="Sélectionner un incident"
             />
           </View>
         </FadeInView>
