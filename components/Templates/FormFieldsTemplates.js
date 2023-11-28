@@ -24,8 +24,6 @@ export default function DynamicFormInputs({
               const array = JSON.parse(
                 "[" + placeholder.substring(bracketIndex + 1)
               );
-              console.log("dropHolder:", dropholder);
-              console.log("array:", array);
               conditionalInputs.push(
                 <Dropdown
                   key={index}

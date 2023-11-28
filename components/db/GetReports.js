@@ -1,24 +1,32 @@
-// File: useTodoCheck.js
 import { useState, useEffect } from "react";
-import { ref, onValue } from "firebase/database";
+import { ref, orderByChild, startAt, query, onValue } from "firebase/database";
 import { db } from "../../config";
 
 const useTodoCheck = () => {
   const [todoCheck, setTodoCheck] = useState([]);
 
   useEffect(() => {
-    const starCountRef = ref(db, "reports/");
+    // Créer une requête pour filtrer par date
+    const filteredQuery = query(
+      ref(db, "reports"),
+      orderByChild("date"),
+      startAt("28/11/2023") // Utilisez la date d'il y a un mois
+    );
 
-    onValue(starCountRef, (snapshot) => {
+    onValue(filteredQuery, (snapshot) => {
       const data = snapshot.val();
-      const todoCheck = Object.keys(data)
-        .map((key) => ({
-          id: key,
-          ...data[key],
-        }))
-        .filter((item) => item.read === false || item.read === "false");
+      if (data) {
+        const todoCheck = Object.keys(data)
+          .map((key) => ({
+            id: key,
+            ...data[key],
+          }))
+          .filter((item) => item.read === false || item.read === "false");
 
-      setTodoCheck(todoCheck);
+        setTodoCheck(todoCheck);
+      } else {
+        setTodoCheck([]);
+      }
     });
   }, []);
 
