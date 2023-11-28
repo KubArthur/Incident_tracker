@@ -1,34 +1,48 @@
 import { useState, useEffect } from "react";
-import { ref, orderByChild, startAt, query, onValue } from "firebase/database";
+import {
+  ref,
+  orderByChild,
+  startAt,
+  query,
+  onValue,
+  endAt,
+  equalTo,
+} from "firebase/database";
 import { db } from "../../config";
 
-const useTodoCheck = () => {
+const useTodoCheck = (statsEnable, pickerValue) => {
   const [todoCheck, setTodoCheck] = useState([]);
 
   useEffect(() => {
-    // Créer une requête pour filtrer par date
-    const filteredQuery = query(
-      ref(db, "reports"),
-      orderByChild("date"),
-      startAt("28/11/2023") // Utilisez la date d'il y a un mois
-    );
+    let request;
+    if (statsEnable) {
+      request = query(
+        ref(db, "reports"),
+        orderByChild("type"),
+        equalTo(pickerValue ? pickerValue.text : "none")
+      );
+    } else {
+      request = query(
+        ref(db, "reports"),
+        orderByChild("read"),
+        equalTo("false")
+      );
+    }
 
-    onValue(filteredQuery, (snapshot) => {
+    onValue(request, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const todoCheck = Object.keys(data)
-          .map((key) => ({
-            id: key,
-            ...data[key],
-          }))
-          .filter((item) => item.read === false || item.read === "false");
+        const todoCheck = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
 
         setTodoCheck(todoCheck);
       } else {
         setTodoCheck([]);
       }
     });
-  }, []);
+  }, [pickerValue]);
 
   return { todoCheck };
 };

@@ -7,8 +7,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-export default function ButtonTemplates({ label, theme, onPress, icon }) {
-  const isDisabled = "true"; // Convertir en booléen
+export default function ButtonTemplates({ label, theme, onPress }) {
 
   return theme === "primary" ? (
     <TouchableOpacity

@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Modal,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Image, Modal } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import MapView from "react-native-maps";
 import Dropdown from "../components/templates/DropdownTemplates";
@@ -18,15 +12,44 @@ import FadeInView from "../components/effects/Fade";
 import useMarkersRenderer from "../components/templates/MarkerTemplates";
 import CalloutBox from "../components/templates/ReportTemplates";
 import Button from "../components/templates/ButtonTemplates";
+import { format, sub } from "date-fns";
 
 export default function LogPage({ navigation }) {
   const [calloutBox, setCalloutBox] = useState(false);
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [pickerValue, setPickerValue] = useState("");
+  const [monthValue, setMonthValue] = useState("");
+  const [yearValue, setYearValue] = useState("");
   const { typeData } = useConfigTypes();
-  const { todoCheck } = useTodoCheck();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [photoVisible, setPhotoVisible] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [settingsEnable, setSettingsEnable] = useState(false);
+  const [statsEnable, setStatsEnable] = useState(false);
+  const default_date = sub(new Date(), { weeks: 4 });
+  const [timeline, setTimeline] = useState(new Date(default_date).getTime());
+  const [archiveEnable, setArchiveEnable] = useState(false);
+
+  useEffect(() => {
+    if (
+      statsEnable &&
+      monthValue &&
+      monthValue.text &&
+      yearValue &&
+      yearValue.text
+    ) {
+      const month = parseInt(monthValue.text, 10);
+      const year = parseInt(yearValue.text, 10);
+
+      const timestamp = new Date(year, month - 1, 1).getTime();
+
+      setTimeline(timestamp);
+    } else {
+      setTimeline(new Date(default_date).getTime());
+    }
+  }, [statsEnable, monthValue, yearValue]);
+
+  const { todoCheck } = useTodoCheck(statsEnable, pickerValue);
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -35,9 +58,23 @@ export default function LogPage({ navigation }) {
     }));
   };
 
+  const handleMonthChange = (text) => {
+    setMonthValue((prevValues) => ({
+      ...prevValues,
+      text,
+    }));
+  };
+
+  const handleYearChange = (text) => {
+    setYearValue((prevValues) => ({
+      ...prevValues,
+      text,
+    }));
+  };
+
   const handleImagePress = (imageUrl) => {
     setSelectedImage(imageUrl);
-    setModalVisible(true);
+    setphotoVisible(true);
   };
 
   const handleMarkerPress = (markerId) => {
@@ -69,7 +106,7 @@ export default function LogPage({ navigation }) {
           showsUserLocation={false}
           showsCompass={false}
           initialRegion={{
-            latitude: 50.48945067381617,
+            latitude: 50.48787067381617,
             longitude: 2.8115017153322697,
             latitudeDelta: 0.034087918155222496,
             longitudeDelta: 0.026976652443408966,
@@ -104,22 +141,104 @@ export default function LogPage({ navigation }) {
       <View style={styles.headContainer}>
         <FadeInView key="H0">
           <View style={styles.head}>
-            <Icon theme="home" onPress={() => navigation.navigate("Home")} />
-            <Dropdown
-              theme="default"
-              onChangePicker={(value) => handlePickerChange(value)}
-              options={typeData}
-              setValue={pickerValue}
-              placeholder="Sélectionner un incident"
-            />
+            <View style={styles.panel}>
+              <Icon theme="center-focus-strong" onPress={""} />
+              <Icon
+                theme="archive-search"
+                onPress={() =>
+                  archiveEnable
+                    ? setArchiveEnable(false)
+                    : setArchiveEnable(true)
+                }
+                effect={archiveEnable}
+              />
+              <Icon theme="home" onPress={() => navigation.navigate("Home")} />
+              <Icon
+                theme="stats-chart"
+                onPress={() =>
+                  statsEnable
+                    ? (setStatsEnable(false), setPickerValue(""))
+                    : (setStatsEnable(true), setPickerValue(""))
+                }
+                effect={statsEnable}
+              />
+              <Icon
+                theme="toolBar"
+                onPress={() =>
+                  settingsEnable
+                    ? (setSettingsEnable(false),
+                      setPickerValue(""),
+                      setDropdownVisible(false))
+                    : (setSettingsEnable(true),
+                      setPickerValue(""),
+                      setDropdownVisible(true))
+                }
+                effect={settingsEnable}
+              />
+            </View>
+            {dropdownVisible ? (
+              <FadeInView key={statsEnable}>
+                <View marginBottom={15}>
+                  <Dropdown
+                    theme="default"
+                    onChangePicker={(value) => handlePickerChange(value)}
+                    options={typeData}
+                    setValue={pickerValue}
+                    placeholder="Sélectionner un incident"
+                  />
+                </View>
+                {statsEnable ? (
+                  <>
+                    <View style={styles.panel} marginBottom={10}>
+                      <Text style={{ ...styles.dataBox, marginTop:10 }}>De</Text>
+                      <View marginRight={10} marginLeft={10}>
+                        <Dropdown
+                          theme="months"
+                          onChangePicker={(value) => handleMonthChange(value)}
+                          options={typeData}
+                          setValue={pickerValue}
+                          placeholder="Mois"
+                        />
+                      </View>
+                      <Dropdown
+                        theme="years"
+                        onChangePicker={(value) => handleYearChange(value)}
+                        options={typeData}
+                        setValue={pickerValue}
+                        placeholder="Année"
+                      />
+                    </View>
+                    <View style={styles.panel} marginBottom={20}>
+                      <Text style={{ ...styles.dataBox, marginTop:10 }}> À </Text>
+                      <View marginRight={10} marginLeft={10}>
+                        <Dropdown
+                          theme="months"
+                          onChangePicker={(value) => handleMonthChange(value)}
+                          options={typeData}
+                          setValue={pickerValue}
+                          placeholder="Mois"
+                        />
+                      </View>
+                      <Dropdown
+                        theme="years"
+                        onChangePicker={(value) => handleYearChange(value)}
+                        options={typeData}
+                        setValue={pickerValue}
+                        placeholder="Année"
+                      />
+                    </View>
+                  </>
+                ) : null}
+              </FadeInView>
+            ) : null}
           </View>
         </FadeInView>
       </View>
 
       <Modal
-        visible={modalVisible}
+        visible={photoVisible}
         transparent={true}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => setPhotoVisible(false)}
       >
         <View style={styles.modalContainer}>
           <Image
@@ -130,7 +249,7 @@ export default function LogPage({ navigation }) {
             <Button
               label="Fermer"
               theme="secondary_small"
-              onPress={() => setModalVisible(false)}
+              onPress={() => setPhotoVisible(false)}
             />
           </View>
         </View>
@@ -140,6 +259,10 @@ export default function LogPage({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  panel: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
   head: {
     marginTop: 30,
     flexDirection: "column",
@@ -151,9 +274,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 165,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
     backgroundColor: "rgba(0, 0, 15, 0.8)",
   },
   container: {

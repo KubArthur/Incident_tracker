@@ -35,7 +35,7 @@ const CalloutBox = ({
           <>
             <Text style={styles.titleBox}>{item.type},</Text>
             <Text style={styles.dataBox}>
-              à {item.heure} le {item.date}
+              à {item.timestamp}
             </Text>
 
             {Object.keys(item.inputValues).map((key) => (

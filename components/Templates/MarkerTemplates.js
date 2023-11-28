@@ -2,7 +2,11 @@ import React from "react";
 import { Marker } from "react-native-maps";
 import Icon from "./IconTemplates";
 
-export default function useMarkersRenderer(todoCheck, pickerValue, handleMarkerPress) {
+export default function useMarkersRenderer(
+  todoCheck,
+  pickerValue,
+  handleMarkerPress
+) {
   return todoCheck
     .filter((item) => !pickerValue.text || item.type === pickerValue.text)
     .map((item) => {
@@ -19,7 +23,7 @@ export default function useMarkersRenderer(todoCheck, pickerValue, handleMarkerP
           imageSource = require("../../assets/car.png");
           break;
         default:
-          imageSource = require("../../assets/car.png");
+          imageSource = require("../../assets/network.png");
       }
 
       const location = item.location || "";

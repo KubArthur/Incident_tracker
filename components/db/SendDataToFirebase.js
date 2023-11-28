@@ -12,9 +12,7 @@ const sendDataToFirebase = async (
   inputValues,
   location,
   image,
-  code,
-  date,
-  heure,
+  timestamp,
   navigation,
   setUploading,
   setImage,
@@ -52,9 +50,7 @@ const sendDataToFirebase = async (
   }
 
   setPopupVisible(true);
-  setPopupText(
-    "traitement..."
-  );
+  setPopupText("traitement...");
 
   try {
     setUploading(true);
@@ -85,10 +81,9 @@ const sendDataToFirebase = async (
     const downloadURL = await getDownloadURL(storageRef);
 
     // Ajouter les données à la base de données Firebase
-    set(ref(db, "reports/" + code), {
+    set(ref(db, "reports/" + timestamp), {
       type: pickerValue.text,
-      date: date,
-      heure: heure,
+      timestamp: timestamp,
       location: location,
       inputValues: inputValues,
       image: downloadURL, // Ajouter le lien de téléchargement de l'image

@@ -9,10 +9,8 @@ import {
 } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import Dropdown from "../components/templates/DropdownTemplates";
-import Input from "../components/templates/InputTemplates";
 import Button from "../components/templates/ButtonTemplates";
 import { getCurrentPositionAsync, LocationAccuracy } from "expo-location";
-import { format } from "date-fns";
 import useConfigTypes from "../components/db/GetConfigTypes";
 import FadeInView from "../components/effects/Fade";
 import { sendDataToFirebase } from "../components/db/SendDataToFirebase";
@@ -25,9 +23,7 @@ export default function FormPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [bascule, setBascule] = useState(0);
 
-  const code = format(new Date(), "ddMMyyyyHHmmss");
-  const date = format(new Date(), "dd/MM/yyyy");
-  const heure = format(new Date(), "HH:mm");
+  const timestamp = new Date().getTime();
 
   const { typeData, todoData } = useConfigTypes();
 
@@ -88,9 +84,7 @@ export default function FormPage({ navigation }) {
       inputValues,
       location,
       capturedImage,
-      code,
-      date,
-      heure,
+      timestamp,
       navigation,
       setUploading,
       setImage,

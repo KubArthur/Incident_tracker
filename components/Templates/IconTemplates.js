@@ -1,24 +1,68 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons, FontAwesome } from "@expo/vector-icons"; // Import Ionicons
+import {
+  Ionicons,
+  FontAwesome,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons"; // Import Ionicons
 
-export default function IconTemplates({ theme, onPress }) {
+export default function IconTemplates({ theme, onPress, effect }) {
   return theme === "home" ? (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <Ionicons
         name="home"
         size={36}
         color="white"
-        onPress={onPress}
-        marginBottom={30}
+        marginBottom={25}
+        marginLeft={20}
+        marginRight={20}
       />
     </TouchableOpacity>
-  ) : theme === "camera" || theme === "car" || theme === "water" || theme === "network"? (
+  ) : theme === "camera" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
       style={[styles.buttonContainer_s, styles.bn36]}
     >
       <FontAwesome name={theme} size={36} color="white" />
+    </TouchableOpacity>
+  ) : theme === "stats-chart" ? (
+    <TouchableOpacity onPress={onPress}>
+      <Ionicons
+        name="stats-chart"
+        size={24}
+        color={effect ? "deepskyblue" : "white"}
+        marginTop={10}
+      />
+    </TouchableOpacity>
+  ) : theme === "toolBar" ? (
+    <TouchableOpacity onPress={onPress}>
+      <FontAwesome
+        name={effect ? "eye-slash" : "eye"}
+        size={26}
+        color="white"
+        marginTop={10}
+        marginLeft={15}
+      />
+    </TouchableOpacity>
+  ) : theme === "archive-search" ? (
+    <TouchableOpacity onPress={onPress}>
+      <MaterialCommunityIcons
+        name={effect ? "archive-off" : "archive-search"}
+        size={26}
+        color="white"
+        marginTop={10}
+      />
+    </TouchableOpacity>
+  ) : theme === "center-focus-strong" ? (
+    <TouchableOpacity onPress={onPress}>
+      <MaterialIcons
+        name="center-focus-strong"
+        size={24}
+        color="white"
+        marginTop={10}
+        marginRight={15}
+      />
     </TouchableOpacity>
   ) : null;
 }
