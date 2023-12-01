@@ -31,17 +31,6 @@ export default function LogPage({ navigation }) {
   const [timeline, setTimeline] = useState(new Date(default_date).getTime());
   const [archiveEnable, setArchiveEnable] = useState(false);
 
-  useEffect(() => {
-    if (statsEnable && yearValue && yearValue.text) {
-      const year = parseInt(yearValue.text, 10);
-
-      const timestamp = new Date(year, 0, 1).getTime();
-      setTimeline(timestamp);
-    } else {
-      setTimeline(new Date(default_date).getTime());
-    }
-  }, [statsEnable, monthValue, yearValue, archiveEnable]);
-
   const { todoCheck } = useTodoCheck(
     statsEnable,
     archiveEnable,
@@ -77,7 +66,12 @@ export default function LogPage({ navigation }) {
     set(ref(db, `reports/${selectedMarkerId}/read`), true);
   };
 
-  const markersToRender = useMarkersRenderer(todoCheck, handleMarkerPress);
+  const markersToRender = useMarkersRenderer(
+    todoCheck,
+    handleMarkerPress,
+    statsEnable,
+    yearValue
+  );
 
   const handleScreenTouch = () => {
     setSelectedMarkerId(null);
@@ -112,7 +106,7 @@ export default function LogPage({ navigation }) {
             </FadeInView>
           </View>
         ) : statsEnable ? (
-          <StatsBoard todoCheck={todoCheck} periodes={yearValue}/>
+          <StatsBoard todoCheck={todoCheck} periodes={yearValue} />
         ) : !selectedMarkerId ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C1">
@@ -171,10 +165,8 @@ export default function LogPage({ navigation }) {
                 onPress={() =>
                   settingsEnable
                     ? (setSettingsEnable(false),
-                      setPickerValue(""),
                       setDropdownVisible(false))
                     : (setSettingsEnable(true),
-                      setPickerValue(""),
                       setDropdownVisible(true))
                 }
                 effect={settingsEnable}
@@ -201,7 +193,7 @@ export default function LogPage({ navigation }) {
                         theme="years"
                         onChangePicker={(value) => handleYearChange(value)}
                         options={typeData}
-                        setValue={pickerValue}
+                        setValue={yearValue}
                         placeholder="Année"
                       />
                     </View>

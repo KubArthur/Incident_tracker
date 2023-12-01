@@ -15,7 +15,9 @@ const StatsBoard = ({ todoCheck, periodes }) => {
   // Filtrer les éléments en fonction de la période spécifiée
   const filteredItems = sortedItems.filter((item) => {
     const year = item.date.getFullYear();
-    return periodes.text.includes(year.toString());
+    return periodes.text !== undefined
+      ? periodes.text.includes(year.toString())
+      : null;
   });
 
   // Séparer les éléments par année et par mois

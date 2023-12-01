@@ -1,8 +1,22 @@
 import React from "react";
 import { Marker } from "react-native-maps";
 
-export default function useMarkersRenderer(todoCheck, handleMarkerPress) {
-  return todoCheck.map((item) => {
+export default function useMarkersRenderer(
+  todoCheck,
+  handleMarkerPress,
+  statsEnable,
+  periodes,
+) {
+  const filteredTodoCheck = statsEnable
+    ? todoCheck.filter((item) => {
+        const year = new Date(item.timestamp).getFullYear().toString();
+        return periodes.text !== undefined
+      ? periodes.text.includes(year.toString())
+      : null;
+      })
+    : todoCheck;
+
+  return filteredTodoCheck.map((item) => {
     let imageSource;
     switch (item.type) {
       case "Inondation":
