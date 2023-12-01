@@ -20,7 +20,7 @@ export default function LogPage({ navigation }) {
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [pickerValue, setPickerValue] = useState("");
   const [monthValue, setMonthValue] = useState("");
-  const [yearValue, setYearValue] = useState("");
+  const [yearValue, setYearValue] = useState([]);
   const { typeData } = useConfigTypes();
   const [selectedImage, setSelectedImage] = useState(null);
   const [photoVisible, setPhotoVisible] = useState(false);
@@ -51,13 +51,6 @@ export default function LogPage({ navigation }) {
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
-      ...prevValues,
-      text,
-    }));
-  };
-
-  const handleMonthChange = (text) => {
-    setMonthValue((prevValues) => ({
       ...prevValues,
       text,
     }));

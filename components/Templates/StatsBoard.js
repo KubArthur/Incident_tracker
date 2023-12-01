@@ -15,8 +15,7 @@ const StatsBoard = ({ todoCheck, periodes }) => {
   // Filtrer les éléments en fonction de la période spécifiée
   const filteredItems = sortedItems.filter((item) => {
     const year = item.date.getFullYear();
-    return year.toString() === periodes.text;
-    //return periodes.includes(year.toString());
+    return periodes.text.includes(year.toString());
   });
 
   // Séparer les éléments par année et par mois
@@ -41,8 +40,6 @@ const StatsBoard = ({ todoCheck, periodes }) => {
     });
     return result;
   }, {});
-
-  console.log("Nombre de types par mois :", typesPerMonth);
 
   const monthNames = [
     "Ja",
