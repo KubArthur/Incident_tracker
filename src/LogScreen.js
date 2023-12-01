@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, View, Text, Image, Modal } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import MapView from "react-native-maps";
@@ -10,9 +10,10 @@ import customMapStyle from "../components/templates/MapTemplate";
 import useTodoCheck from "../components/db/GetReports";
 import FadeInView from "../components/effects/Fade";
 import useMarkersRenderer from "../components/templates/MarkerTemplates";
-import CalloutBox from "../components/templates/ReportTemplates";
+import Report from "../components/templates/ReportTemplates";
 import Button from "../components/templates/ButtonTemplates";
 import { format, sub } from "date-fns";
+import StatsBoard from "../components/templates/StatsBoard";
 
 export default function LogPage({ navigation }) {
   const [calloutBox, setCalloutBox] = useState(false);
@@ -31,25 +32,22 @@ export default function LogPage({ navigation }) {
   const [archiveEnable, setArchiveEnable] = useState(false);
 
   useEffect(() => {
-    if (
-      statsEnable &&
-      monthValue &&
-      monthValue.text &&
-      yearValue &&
-      yearValue.text
-    ) {
-      const month = parseInt(monthValue.text, 10);
+    if (statsEnable && yearValue && yearValue.text) {
       const year = parseInt(yearValue.text, 10);
 
-      const timestamp = new Date(year, month - 1, 1).getTime();
-
+      const timestamp = new Date(year, 0, 1).getTime();
       setTimeline(timestamp);
     } else {
       setTimeline(new Date(default_date).getTime());
     }
-  }, [statsEnable, monthValue, yearValue]);
+  }, [statsEnable, monthValue, yearValue, archiveEnable]);
 
-  const { todoCheck } = useTodoCheck(statsEnable, pickerValue);
+  const { todoCheck } = useTodoCheck(
+    statsEnable,
+    archiveEnable,
+    pickerValue,
+    timeline
+  );
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -74,7 +72,7 @@ export default function LogPage({ navigation }) {
 
   const handleImagePress = (imageUrl) => {
     setSelectedImage(imageUrl);
-    setphotoVisible(true);
+    setPhotoVisible(true);
   };
 
   const handleMarkerPress = (markerId) => {
@@ -86,20 +84,19 @@ export default function LogPage({ navigation }) {
     set(ref(db, `reports/${selectedMarkerId}/read`), true);
   };
 
-  const markersToRender = useMarkersRenderer(
-    todoCheck,
-    pickerValue,
-    handleMarkerPress
-  );
+  const markersToRender = useMarkersRenderer(todoCheck, handleMarkerPress);
 
   const handleScreenTouch = () => {
     setSelectedMarkerId(null);
   };
 
+  const mapRef = useRef(null);
+
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
         <MapView
+          ref={mapRef}
           style={styles.map}
           customMapStyle={customMapStyle}
           toolbarEnabled={false}
@@ -115,34 +112,48 @@ export default function LogPage({ navigation }) {
           {markersToRender}
         </MapView>
 
-        {todoCheck.length === 0 ? (
+        {todoCheck.length === 0 && !statsEnable ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C0">
               <Text style={styles.dataBox}>Aucune nouvelle remontée !</Text>
             </FadeInView>
           </View>
-        ) : calloutBox === false || selectedMarkerId === null ? (
+        ) : statsEnable ? (
+          <StatsBoard todoCheck={todoCheck} periodes={yearValue}/>
+        ) : !selectedMarkerId ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C1">
               <Text style={styles.dataBox}>Press un marker...</Text>
             </FadeInView>
           </View>
-        ) : (
-          <CalloutBox
+        ) : selectedMarkerId ? (
+          <Report
             todoCheck={todoCheck}
             selectedMarkerId={selectedMarkerId}
             handleImagePress={handleImagePress}
             upData={upData}
-            setCalloutBox={setCalloutBox}
+            setCalloutBox={setSelectedMarkerId}
           />
-        )}
+        ) : null}
       </View>
 
       <View style={styles.headContainer}>
         <FadeInView key="H0">
           <View style={styles.head}>
             <View style={styles.panel}>
-              <Icon theme="center-focus-strong" onPress={""} />
+              <Icon
+                theme="center-focus-strong"
+                onPress={() => {
+                  if (mapRef.current) {
+                    mapRef.current.animateToRegion({
+                      latitude: 50.48787067381617,
+                      longitude: 2.8115017153322697,
+                      latitudeDelta: 0.034087918155222496,
+                      longitudeDelta: 0.026976652443408966,
+                    });
+                  }
+                }}
+              />
               <Icon
                 theme="archive-search"
                 onPress={() =>
@@ -190,35 +201,9 @@ export default function LogPage({ navigation }) {
                 {statsEnable ? (
                   <>
                     <View style={styles.panel} marginBottom={10}>
-                      <Text style={{ ...styles.dataBox, marginTop:10 }}>De</Text>
-                      <View marginRight={10} marginLeft={10}>
-                        <Dropdown
-                          theme="months"
-                          onChangePicker={(value) => handleMonthChange(value)}
-                          options={typeData}
-                          setValue={pickerValue}
-                          placeholder="Mois"
-                        />
-                      </View>
-                      <Dropdown
-                        theme="years"
-                        onChangePicker={(value) => handleYearChange(value)}
-                        options={typeData}
-                        setValue={pickerValue}
-                        placeholder="Année"
-                      />
-                    </View>
-                    <View style={styles.panel} marginBottom={20}>
-                      <Text style={{ ...styles.dataBox, marginTop:10 }}> À </Text>
-                      <View marginRight={10} marginLeft={10}>
-                        <Dropdown
-                          theme="months"
-                          onChangePicker={(value) => handleMonthChange(value)}
-                          options={typeData}
-                          setValue={pickerValue}
-                          placeholder="Mois"
-                        />
-                      </View>
+                      <Text style={{ ...styles.dataBox, marginTop: 10 }}>
+                        Période{" "}
+                      </Text>
                       <Dropdown
                         theme="years"
                         onChangePicker={(value) => handleYearChange(value)}

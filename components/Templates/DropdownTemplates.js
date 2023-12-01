@@ -199,7 +199,7 @@ export default function DropdownTemplates({
         borderWidth: 2,
       }}
       dropdownIconStyle={{ top: -100, right: -100 }}
-      dropdownContainerStyle={{ marginBottom: 10, width: 70 }}
+      dropdownContainerStyle={{ marginBottom: 10, width: 161 }}
       modalOptionsContainerStyle={{
         padding: 10,
         paddingBottom: 10,

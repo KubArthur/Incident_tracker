@@ -10,7 +10,12 @@ import {
 } from "firebase/database";
 import { db } from "../../config";
 
-const useTodoCheck = (statsEnable, pickerValue) => {
+const useTodoCheck = (
+  statsEnable,
+  archiveEnable,
+  pickerValue,
+  default_date
+) => {
   const [todoCheck, setTodoCheck] = useState([]);
 
   useEffect(() => {
@@ -19,14 +24,16 @@ const useTodoCheck = (statsEnable, pickerValue) => {
       request = query(
         ref(db, "reports"),
         orderByChild("type"),
-        equalTo(pickerValue ? pickerValue.text : "none")
+        equalTo(pickerValue && pickerValue.text ? pickerValue.text : "none")
       );
-    } else {
+    } else if (archiveEnable) {
       request = query(
         ref(db, "reports"),
-        orderByChild("read"),
-        equalTo("false")
+        orderByChild("timestamp"),
+        startAt(default_date)
       );
+    } else {
+      request = query(ref(db, "reports"), orderByChild("read"), equalTo(false));
     }
 
     onValue(request, (snapshot) => {
@@ -42,7 +49,9 @@ const useTodoCheck = (statsEnable, pickerValue) => {
         setTodoCheck([]);
       }
     });
-  }, [pickerValue]);
+  }, [pickerValue, archiveEnable, statsEnable]);
+
+  
 
   return { todoCheck };
 };

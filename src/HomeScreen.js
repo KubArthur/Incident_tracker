@@ -1,7 +1,13 @@
 import React from "react";
-import { StatusBar, ImageBackground, View, StyleSheet, Image, BackHandler } from "react-native";
+import {
+  StatusBar,
+  ImageBackground,
+  View,
+  StyleSheet,
+  Image,
+  BackHandler,
+} from "react-native";
 import Button from "../components/templates/ButtonTemplates";
-
 
 export default function HomePage({ navigation }) {
   const handleCloseApp = () => {

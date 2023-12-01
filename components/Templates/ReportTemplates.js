@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import FadeInView from "../effects/Fade";
 import Button from "../templates/ButtonTemplates";
+import Icon from "./IconTemplates";
 
 const CalloutBox = ({
   todoCheck,
@@ -18,51 +19,67 @@ const CalloutBox = ({
         ...styles.callout,
         height:
           Object.keys(item?.inputValues || {}).length > 5
-            ? 308
+            ? 300
             : Object.keys(item?.inputValues || {}).length > 4
-            ? 301
+            ? 240
             : Object.keys(item?.inputValues || {}).length > 3
-            ? 274
+            ? 210
             : Object.keys(item?.inputValues || {}).length > 2
-            ? 247
+            ? 180
             : Object.keys(item?.inputValues || {}).length > 1
-            ? 232
-            : 195,
+            ? 150
+            : null,
       }}
     >
       <FadeInView key={selectedMarkerId}>
         {item && (
-          <>
-            <Text style={styles.titleBox}>{item.type},</Text>
-            <Text style={styles.dataBox}>
-              à {item.timestamp}
-            </Text>
-
-            {Object.keys(item.inputValues).map((key) => (
-              <Text style={styles.dataBox} key={key}>
-                {key}: {item.inputValues[key]}
+          <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
+            <View style={styles.leftContent}>
+              <Text style={styles.titleBox}>{item.type},</Text>
+              <Text style={styles.dataBox}>
+                le{" "}
+                {new Date(item.timestamp).toLocaleString("fr-FR", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
               </Text>
-            ))}
-            <View style={styles.button}>
-              <View style={{ marginRight: 10 }}>
-                <Button
-                  label=""
-                  theme="secondary_picture"
-                  onPress={() => handleImagePress(item.image)}
-                />
-              </View>
-              <View style={{ marginLeft: 10 }}>
-                <Button
-                  theme="secondary_archive"
-                  label=""
-                  onPress={() => {
-                    upData();
-                    setCalloutBox(false);
-                  }}
-                />
-              </View>
+
+              {Object.keys(item.inputValues)
+                .reverse()
+                .map((key) => {
+                  // Vérifier si le dernier caractère est un *
+                  const cleanedKey = key.endsWith("*") ? key.slice(0, -1) : key;
+
+                  return (
+                    <Text style={styles.dataBox} key={key}>
+                      {cleanedKey} : {item.inputValues[key]}
+                    </Text>
+                  );
+                })}
             </View>
-          </>
+            <View style={styles.rightContent}>
+              <Icon
+                theme="cross"
+                onPress={() => {
+                  setCalloutBox(false);
+                }}
+              />
+              <Icon
+                theme="picture-o"
+                onPress={() => handleImagePress(item.image)}
+              />
+              <Icon
+                theme="archive"
+                onPress={() => {
+                  upData();
+                  setCalloutBox(false);
+                }}
+              />
+            </View>
+          </View>
         )}
       </FadeInView>
     </View>
@@ -95,10 +112,14 @@ const styles = StyleSheet.create({
     padding: 4,
     maxWidth: 300,
   },
-  button: {
-    flexDirection: "row",
-    marginTop: 10,
-    alignItems: "center",
-    justifyContent: "center",
+  leftContent: {
+    marginRight: 80,
+    minWidth: "70%",
+    marginLeft: 15,
+  },
+  rightContent: {
+    position: "absolute",
+    top: -30,
+    right: 15,
   },
 });

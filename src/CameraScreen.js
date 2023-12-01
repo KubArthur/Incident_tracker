@@ -90,6 +90,7 @@ export default function CameraScreen({ navigation, route }) {
                     )
                   }
                   theme="secondary_flash"
+                  effect={flash}
                 />
               </View>
             </Camera>

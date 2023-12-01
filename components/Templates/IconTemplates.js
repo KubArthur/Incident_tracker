@@ -5,6 +5,7 @@ import {
   FontAwesome,
   MaterialCommunityIcons,
   MaterialIcons,
+  Entypo,
 } from "@expo/vector-icons"; // Import Ionicons
 
 export default function IconTemplates({ theme, onPress, effect }) {
@@ -22,9 +23,23 @@ export default function IconTemplates({ theme, onPress, effect }) {
   ) : theme === "camera" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
+      style={[styles.buttonContainer_b, styles.bn35]}
+    >
+      <FontAwesome name={theme} size={44} color="white" />
+    </TouchableOpacity>
+  ) : theme === "archive" || theme === "picture-o" ? (
+    <TouchableOpacity
+      onPress={onPress} // Pass the onPress function to TouchableOpacity
       style={[styles.buttonContainer_s, styles.bn36]}
     >
-      <FontAwesome name={theme} size={36} color="white" />
+      <FontAwesome name={theme} size={24} color="white" />
+    </TouchableOpacity>
+  ) : theme === "cross" ? (
+    <TouchableOpacity
+      onPress={onPress} // Pass the onPress function to TouchableOpacity
+      style={[styles.buttonContainer_sr, styles.bn37]}
+    >
+      <FontAwesome name="remove" size={24} color="red" />
     </TouchableOpacity>
   ) : theme === "stats-chart" ? (
     <TouchableOpacity onPress={onPress}>
@@ -68,6 +83,16 @@ export default function IconTemplates({ theme, onPress, effect }) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer_b: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 10,
+    width: 70,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+  },
   buttonContainer_s: {
     display: "flex",
     flexDirection: "row",
@@ -76,11 +101,32 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
     borderRadius: 10,
-    width: 60,
+    maxHeight: 60,
+    maxWidth: 60,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
+  },
+  buttonContainer_sr: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    padding: 8,
+    borderRadius: 10,
+    maxHeight: 60,
+    maxWidth: 60,
+    backgroundColor: "rgba(0, 0, 0, 1)",
+  },
+  bn35: {
+    borderWidth: 2,
+    borderColor: "deepskyblue",
   },
   bn36: {
     borderWidth: 2,
     borderColor: "white",
+  },
+  bn37: {
+    borderWidth: 2,
+    borderColor: "red",
   },
 });

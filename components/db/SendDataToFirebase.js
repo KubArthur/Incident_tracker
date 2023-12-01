@@ -87,7 +87,7 @@ const sendDataToFirebase = async (
       location: location,
       inputValues: inputValues,
       image: downloadURL, // Ajouter le lien de téléchargement de l'image
-      read: "false",
+      read: false,
     });
 
     // Terminer le processus d'envoi

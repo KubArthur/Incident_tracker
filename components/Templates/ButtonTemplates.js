@@ -7,8 +7,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-export default function ButtonTemplates({ label, theme, onPress }) {
-
+export default function ButtonTemplates({ label, theme, onPress, effect }) {
   return theme === "primary" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
@@ -62,7 +61,7 @@ export default function ButtonTemplates({ label, theme, onPress }) {
       style={[styles.buttonContainer_s, styles.bn36]}
     >
       <Ionicons
-        name="flash"
+        name={effect ? "flash" : "flash-off"}
         size={18}
         color="white"
         style={styles.buttonIcon}
