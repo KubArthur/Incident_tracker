@@ -54,7 +54,7 @@ export default function DropdownTemplates({
       primaryColor={"deepskyblue"}
       dropdownStyle={{
         backgroundColor: "none",
-        paddingVertical: 10,
+        paddingVertical: 7,
         paddingHorizontal: 10,
         minHeight: 40,
         borderColor: "white",
@@ -114,12 +114,17 @@ export default function DropdownTemplates({
         </Text>
       }
       isMultiple
+      listControls={{
+        selectAllText: "Cocher tout",
+        unselectAllText: "Décocher tout",
+      }}
       primaryColor={"deepskyblue"}
       dropdownStyle={{
         backgroundColor: "none",
-        paddingVertical: 10,
+        paddingVertical: 1,
         paddingHorizontal: 10,
         minHeight: 40,
+        maxHeight: 40,
         borderColor: "white",
         borderRadius: 6,
         borderWidth: 2,
@@ -148,7 +153,7 @@ export default function DropdownTemplates({
         checkboxSize: 10,
         checkboxStyle: {
           backgroundColor: "deepskyblue",
-          borderRadius: 30, // To get a circle - add the checkboxSize and the padding size
+          borderRadius: 8, // To get a circle - add the checkboxSize and the padding size
           padding: 5,
         },
         checkboxLabelStyle: { color: "white", fontSize: 20 },

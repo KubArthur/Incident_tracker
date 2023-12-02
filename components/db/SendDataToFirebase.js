@@ -6,6 +6,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import mySingleton from "../Singleton";
 
 const sendDataToFirebase = async (
   pickerValue,
@@ -17,7 +18,8 @@ const sendDataToFirebase = async (
   setUploading,
   setImage,
   setPopupVisible,
-  setPopupText
+  setPopupText,
+  needCheck
 ) => {
   if (!pickerValue.text) {
     setPopupVisible(true);
@@ -25,13 +27,23 @@ const sendDataToFirebase = async (
     return;
   }
 
+  let totalAsterisks = 0;
+
+  Object.keys(inputValues).forEach((key) => {
+    const value = inputValues[key];
+    const keyAsterisks = (key.match(/\*/g) || []).length;
+    const valueAsterisks = (value.match(/\*/g) || []).length;
+
+    totalAsterisks += keyAsterisks + valueAsterisks;
+  });
+
   const isEmpty = Object.entries(inputValues).some(([key, value]) => {
     return key.endsWith("*") && value === "";
   });
 
-  if (isEmpty) {
+  if (isEmpty || totalAsterisks !== needCheck) {
     setPopupVisible(true);
-    setPopupText("Assurez-vous que tous les champs d'entrée sont remplis.");
+    setPopupText("Remplissez tous les champs obligatoires.");
     return;
   }
 
@@ -97,6 +109,8 @@ const sendDataToFirebase = async (
     setImage(null);
 
     // Naviguer vers l'écran d'accueil
+    mySingleton.setMyBoolean2(true);
+
     navigation.navigate("Home");
   } catch (error) {
     console.error(error);

@@ -70,7 +70,8 @@ export default function LogPage({ navigation }) {
     todoCheck,
     handleMarkerPress,
     statsEnable,
-    yearValue
+    yearValue,
+    pickerValue
   );
 
   const handleScreenTouch = () => {

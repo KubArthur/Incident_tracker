@@ -28,9 +28,6 @@ export default function CustomPopup({ isVisible, label, onClose }) {
             <Text style={styles.label}>
               Veuillez patienter pendant la remontée de l'incident au serveur.
             </Text>
-            <Text style={styles.label}>
-              Une fois terminée, vous serez rédirigé sur la page d'accueil.
-            </Text>
             <Text style={styles.loading}>{loadingText}</Text>
           </View>
         </View>

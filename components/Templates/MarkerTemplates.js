@@ -6,6 +6,7 @@ export default function useMarkersRenderer(
   handleMarkerPress,
   statsEnable,
   periodes,
+  pickerValue
 ) {
   const filteredTodoCheck = statsEnable
     ? todoCheck.filter((item) => {
@@ -14,7 +15,7 @@ export default function useMarkersRenderer(
       ? periodes.text.includes(year.toString())
       : null;
       })
-    : todoCheck;
+    : todoCheck.filter((item) => !pickerValue.text || item.type === pickerValue.text);
 
   return filteredTodoCheck.map((item) => {
     let imageSource;

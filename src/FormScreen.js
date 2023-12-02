@@ -3,9 +3,6 @@ import {
   View,
   StyleSheet,
   ImageBackground,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import Icon from "../components/templates/IconTemplates";
 import Dropdown from "../components/templates/DropdownTemplates";
@@ -16,10 +13,11 @@ import FadeInView from "../components/effects/Fade";
 import { sendDataToFirebase } from "../components/db/SendDataToFirebase";
 import Popup from "../components/templates/PopupTemplates";
 import DynamicFormInputs from "../components/templates/FormFieldsTemplates";
+import mySingleton from "../components/Singleton";
 
 export default function FormPage({ navigation }) {
   const [pickerValue, setPickerValue] = useState("");
-  const [inputValues, setInputValues] = useState("");
+  const [inputValues, setInputValues] = useState({});
   const [location, setLocation] = useState(null);
   const [bascule, setBascule] = useState(0);
 
@@ -34,15 +32,41 @@ export default function FormPage({ navigation }) {
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupText, setPopupText] = useState("");
+  const [needCheck, setNeedCheck] = useState(0);
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
       ...prevValues,
       text,
     }));
+    setInputValues({});
     const bascule = 1;
     setBascule(bascule);
   };
+
+  useEffect(() => {
+    todoData.forEach((item) => {
+      Object.values(item).forEach((subItem) => {
+        if (subItem.type === pickerValue.text) {
+          const dataString = subItem.data;
+          if (dataString.includes("*")) {
+            let nombreOccurrences = 0;
+
+            for (let i = 0; i < dataString.length; i++) {
+              if (dataString[i] === "*") {
+                nombreOccurrences++;
+              }
+            }
+
+            setNeedCheck(nombreOccurrences);
+          } else {
+            setNeedCheck(0);
+          }
+        }
+      });
+      console.log("nombre de * : ", needCheck);
+    });
+  }, [pickerValue]);
 
   const handleTextInputChange = (key, value) => {
     setInputValues((prevValues) => ({
@@ -65,9 +89,8 @@ export default function FormPage({ navigation }) {
       setLocation(location);
     } catch (error) {
       console.error("Error getting location:", error);
-      alert(
-        "L'application a besoin de la localisation de l'appareil pour fonctionner. Sans votre approbation, vous ne pourrez remonter un incident."
-      );
+      mySingleton.setMyBoolean1(true);
+      console.log(mySingleton.getMyBoolean1());
       navigation.navigate("Home");
     }
   };
@@ -89,7 +112,8 @@ export default function FormPage({ navigation }) {
       setUploading,
       setImage,
       setPopupVisible,
-      setPopupText
+      setPopupText,
+      needCheck
     );
   };
 

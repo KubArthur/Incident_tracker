@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StatusBar,
   ImageBackground,
@@ -8,11 +8,32 @@ import {
   BackHandler,
 } from "react-native";
 import Button from "../components/templates/ButtonTemplates";
+import mySingleton from "../components/Singleton";
+import Popup from "../components/templates/PopupTemplates";
 
 export default function HomePage({ navigation }) {
   const handleCloseApp = () => {
     BackHandler.exitApp();
   };
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  console.log(mySingleton.getMyBoolean1());
+  useEffect(() => {
+    const handleMyBooleanChange = () => {
+      if (mySingleton.getMyBoolean1()) {
+        setPopupVisible(true);
+      }
+      if (mySingleton.getMyBoolean2()) {
+        setPopupVisible(true);
+      }
+    };
+
+    mySingleton.subscribe(handleMyBooleanChange);
+
+    return () => {
+      mySingleton.unsubscribe(handleMyBooleanChange);
+    };
+  }, []);
 
   return (
     <ImageBackground
@@ -42,6 +63,25 @@ export default function HomePage({ navigation }) {
           />
         </View>
       </View>
+      {mySingleton.getMyBoolean1() ? (
+        <>
+          <Popup
+            isVisible={popupVisible}
+            label="L'application a besoin de la localisation de l'appareil pour fonctionner. Sans votre approbation, vous ne pourrez remonter un incident."
+            onClose={() => setPopupVisible(false)}
+          />
+          {mySingleton.setMyBoolean1(false)}
+        </>
+      ) : mySingleton.getMyBoolean2() ? (
+        <>
+          <Popup
+            isVisible={popupVisible}
+            label="Une fois terminée, vous serez rédirigé sur la page d'accueil."
+            onClose={() => setPopupVisible(false)}
+          />
+          {mySingleton.setMyBoolean2(false)}
+        </>
+      ) : null}
       <StatusBar style="auto" />
     </ImageBackground>
   );
