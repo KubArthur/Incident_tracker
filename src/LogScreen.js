@@ -57,9 +57,25 @@ export default function LogPage({ navigation }) {
     setPhotoVisible(true);
   };
 
+  const focusOnMarker = (markerId) => {
+    const marker = todoCheck.find((marker) => marker.id === markerId);
+
+    if (mapRef.current && marker) {
+      mapRef.current.animateToRegion({
+        latitude: marker.latitude,
+        longitude: marker.longitude,
+        latitudeDelta: 0.01, // Ajustez ces valeurs selon vos besoins
+        longitudeDelta: 0.01,
+      });
+    }
+  };
+
+  // ...
+
   const handleMarkerPress = (markerId) => {
     setCalloutBox(true);
     setSelectedMarkerId(markerId);
+    focusOnMarker(markerId);
   };
 
   const upData = () => {
@@ -76,6 +92,40 @@ export default function LogPage({ navigation }) {
 
   const handleScreenTouch = () => {
     setSelectedMarkerId(null);
+  };
+
+  const getRandomMarkerId = () => {
+    const randomIndex = Math.floor(Math.random() * todoCheck.length);
+    return todoCheck[randomIndex]?.id || null;
+  };
+
+  const getNextMarkerId = () => {
+    if (!selectedMarkerId) {
+      // Si aucun marqueur n'est actuellement sélectionné, obtenir un marqueur aléatoire.
+      return getRandomMarkerId();
+    }
+
+    const currentIndex = todoCheck.findIndex(
+      (marker) => marker.id === selectedMarkerId
+    );
+    const nextIndex = (currentIndex + 1) % todoCheck.length;
+
+    // Si nextIndex est 0, cela signifie que nous avons atteint la fin du tableau,
+    // alors nous sélectionnons le premier élément.
+    const nextMarkerId =
+      nextIndex === 0 ? todoCheck[0]?.id : todoCheck[nextIndex]?.id;
+
+    return nextMarkerId || null;
+  };
+
+  const handleCenterFocusPress = () => {
+    const nextMarkerId = getNextMarkerId();
+    setSelectedMarkerId(nextMarkerId);
+  };
+
+  const test = () => {
+    const randomMarkerId = getRandomMarkerId();
+    setSelectedMarkerId(randomMarkerId);
   };
 
   const mapRef = useRef(null);
@@ -157,7 +207,9 @@ export default function LogPage({ navigation }) {
                 onPress={() =>
                   statsEnable
                     ? (setStatsEnable(false), setPickerValue(""))
-                    : (setStatsEnable(true), setPickerValue(""))
+                    : (setStatsEnable(true),
+                      setPickerValue(""),
+                      setYearValue([]))
                 }
                 effect={statsEnable}
               />
@@ -165,10 +217,8 @@ export default function LogPage({ navigation }) {
                 theme="toolBar"
                 onPress={() =>
                   settingsEnable
-                    ? (setSettingsEnable(false),
-                      setDropdownVisible(false))
-                    : (setSettingsEnable(true),
-                      setDropdownVisible(true))
+                    ? (setSettingsEnable(false), setDropdownVisible(false))
+                    : (setSettingsEnable(true), setDropdownVisible(true))
                 }
                 effect={settingsEnable}
               />
@@ -186,10 +236,7 @@ export default function LogPage({ navigation }) {
                 </View>
                 {statsEnable ? (
                   <>
-                    <View style={styles.panel} marginBottom={10}>
-                      <Text style={{ ...styles.dataBox, marginTop: 10 }}>
-                        Période{" "}
-                      </Text>
+                    <View marginBottom={10}>
                       <Dropdown
                         theme="years"
                         onChangePicker={(value) => handleYearChange(value)}
@@ -262,12 +309,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 10,
-    height: 60,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(20, 20, 20, 1)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   fullScreenImage: {
     width: "100%",

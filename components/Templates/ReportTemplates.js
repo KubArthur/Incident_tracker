@@ -18,17 +18,7 @@ const CalloutBox = ({
       style={{
         ...styles.callout,
         height:
-          Object.keys(item?.inputValues || {}).length > 5
-            ? 300
-            : Object.keys(item?.inputValues || {}).length > 4
-            ? 240
-            : Object.keys(item?.inputValues || {}).length > 3
-            ? 210
-            : Object.keys(item?.inputValues || {}).length > 2
-            ? 180
-            : Object.keys(item?.inputValues || {}).length > 1
-            ? 150
-            : null,
+          Object.keys(item?.inputValues || {}).length > 0 ? 90 + 30 * Object.keys(item?.inputValues || {}).length : 50,
       }}
     >
       <FadeInView key={selectedMarkerId}>
@@ -98,8 +88,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(20, 20, 20, 1)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   titleBox: {
     color: "white",

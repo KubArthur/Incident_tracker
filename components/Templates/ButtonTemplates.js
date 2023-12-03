@@ -97,6 +97,12 @@ export default function ButtonTemplates({ label, theme, onPress, effect }) {
       <FontAwesome name="picture-o" size={18} color="white" />
       <Text style={styles.label_m}>{label}</Text>
     </TouchableOpacity>
+  ) : theme === "secondary_popup" ? (
+    <TouchableOpacity
+      onPress={onPress} // Pass the onPress function to TouchableOpacity
+    >
+      <Text style={styles.label_popup}>{label}</Text>
+    </TouchableOpacity>
   ) : null;
 }
 
@@ -149,6 +155,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textDecorationLine: "none",
     color: "white",
+  },
+  label_popup: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "lightblue",
+    marginBottom: 19,
   },
   buttonIcon: {
     paddingRight: 8,

@@ -62,27 +62,35 @@ const StatsBoard = ({ todoCheck, periodes }) => {
     <View
       style={{
         ...styles.callout,
-        height: 180, // Ajustez la hauteur en fonction du nombre d'années
+        height: Object.keys(typesPerMonth).length > 0 ? 65 + 25 * Object.keys(typesPerMonth).length : 50, // Ajustez la hauteur en fonction du nombre d'années
       }}
     >
-      <View style={styles.tableHeader}>
-        <Text style={styles.headerCell}></Text>
-        {monthNames.map((monthName, index) => (
-          <Text key={index} style={styles.headerCell}>
-            {monthName}
-          </Text>
-        ))}
-      </View>
-      {Object.keys(typesPerMonth).map((year) => (
-        <View key={year} style={styles.tableRow}>
-          <Text style={styles.rowHeader}>{year}</Text>
-          {monthNames.map((monthName, index) => (
-            <Text key={index} style={styles.tableCell}>
-              {typesPerMonth[year][index + 1] || 0}
-            </Text>
+      {Object.keys(typesPerMonth).length > 0 ? (
+        <>
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerCell}></Text>
+            {monthNames.map((monthName, index) => (
+              <Text key={index} style={styles.headerCell}>
+                {monthName}
+              </Text>
+            ))}
+          </View>
+          {Object.keys(typesPerMonth).map((year) => (
+            <View key={year} style={styles.tableRow}>
+              <Text style={styles.rowHeader}>{year}</Text>
+              {monthNames.map((monthName, index) => (
+                <Text key={index} style={styles.tableCell}>
+                  {typesPerMonth[year][index + 1] || 0}
+                </Text>
+              ))}
+            </View>
           ))}
+        </>
+      ) : (
+        <View style={styles.noStatsContainer}>
+          <Text style={styles.noStatsText}>Aucune stats</Text>
         </View>
-      ))}
+      )}
     </View>
   );
 };
@@ -99,8 +107,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(20, 20, 20, 1)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   tableHeader: {
     flexDirection: "row",
@@ -128,5 +136,14 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "white",
     textAlign: "center",
+  },
+  noStatsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noStatsText: {
+    color: "white",
+    fontSize: 16,
   },
 });

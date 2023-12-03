@@ -19,7 +19,7 @@ export default function CustomPopup({ isVisible, label, onClose }) {
 
     return () => clearInterval(intervalId);
   }, []);
-  
+
   return label === "traitement..." ? (
     <Modal visible={isVisible} transparent={true}>
       <View style={styles.overlay}>
@@ -39,7 +39,9 @@ export default function CustomPopup({ isVisible, label, onClose }) {
         <View style={styles.container}>
           <View style={styles.popup}>
             <Text style={styles.label}>{label}</Text>
-            <Button theme="secondary_small" label="Fermer" onPress={onClose} />
+            <View style={styles.button}>
+              <Button theme="secondary_popup" label="OK" onPress={onClose} />
+            </View>
           </View>
         </View>
       </View>
@@ -52,15 +54,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    margin: 40,
   },
   popup: {
-    backgroundColor: "rgba(30, 30, 30, 1)",
-    padding: 30,
+    backgroundColor: "rgba(60, 60, 60, 1)",
     borderRadius: 10,
     elevation: 10,
     justifyContent: "center",
     alignItems: "center",
+    width: "82%", // Ajoutez cette ligne pour définir la largeur à 80%
+  },
+  button: {
+    position: "absolute",
+    bottom: 0, // Ajustez la valeur en conséquence pour définir la distance depuis le bas
+    right: 29, // Ajustez la valeur en conséquence pour définir la distance depuis la gauche
   },
   overlay: {
     position: "absolute",
@@ -68,15 +74,18 @@ const styles = StyleSheet.create({
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   label: {
-    color: "white",
-    marginBottom: 20,
+    width: "84%",
+    fontWeight: "400",
+    color: "rgba(200, 200, 200, 1)",
+    marginBottom: 45,
     fontSize: 18,
-    textAlign: 'justify',
+    marginTop: 16,
   },
   loading: {
+    alignItems: "right",
     color: "white",
     marginBottom: 10,
     fontSize: 30,

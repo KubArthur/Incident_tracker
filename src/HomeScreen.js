@@ -67,7 +67,7 @@ export default function HomePage({ navigation }) {
         <>
           <Popup
             isVisible={popupVisible}
-            label="L'application a besoin de la localisation de l'appareil pour fonctionner. Sans votre approbation, vous ne pourrez remonter un incident."
+            label="L'application a besoin de la localisation de l'appareil pour fonctionner."
             onClose={() => setPopupVisible(false)}
           />
           {mySingleton.setMyBoolean1(false)}
