@@ -10,12 +10,13 @@ import {
 import Button from "../components/templates/Button";
 import mySingleton from "../components/Singleton";
 import Popup from "../components/templates/Popup";
+import Fade from "../components/effects/Fade";
 import { signOut } from "firebase/auth"; // Importez la fonction de déconnexion de Firebase auth
-
 import { auth } from "../config";
 
 export default function HomePage({ navigation }) {
-  const handleCloseApp = () => {
+  const handleCloseApp = async () => {
+    await handleSignOut();
     BackHandler.exitApp();
   };
   const [popupVisible, setPopupVisible] = useState(false);
@@ -39,10 +40,7 @@ export default function HomePage({ navigation }) {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth); // Utilisez la fonction signOut avec l'objet auth de Firebase
-      console.log("Utilisateur déconnecté");
-      // Redirigez l'utilisateur vers l'écran de connexion ou une autre page appropriée
-      navigation.navigate("Login");
+      await signOut(auth);
     } catch (error) {
       console.error("Erreur lors de la déconnexion :", error);
     }
@@ -55,25 +53,32 @@ export default function HomePage({ navigation }) {
     >
       <View style={styles.overlay}>
         <View style={styles.interface}>
-          <Image
-            style={styles.image}
-            source={require("../assets/logo_hulluch.png")}
-          />
-          <Button
-            theme="primary"
-            label="Journal des incidents"
-            onPress={() => navigation.navigate("Log")}
-          />
-          <Button
-            theme="primary"
-            label="Remonter des incidents"
-            onPress={() => navigation.navigate("Form")}
-          />
-          <Button
-            theme="primary"
-            label="Fermer l'application"
-            onPress={handleSignOut}
-          />
+          <Fade>
+            <Image
+              style={styles.image}
+              source={require("../assets/logo_hulluch.png")}
+            />
+          </Fade>
+          <Fade>
+            {mySingleton.getRole() === "admin" ? (
+              <Button
+                theme="primary"
+                label="Journal des incidents"
+                onPress={() => navigation.navigate("Log")}
+              />
+            ) : null}
+
+            <Button
+              theme="primary"
+              label="Remonter des incidents"
+              onPress={() => navigation.navigate("Form")}
+            />
+            <Button
+              theme="primary"
+              label="Fermer l'application"
+              onPress={handleSignOut}
+            />
+          </Fade>
         </View>
       </View>
       {mySingleton.getMyBoolean1() ? (

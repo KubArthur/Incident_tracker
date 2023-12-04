@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from "react";
-import {
-  StatusBar,
-  ImageBackground,
-  View,
-  StyleSheet,
-  Image,
-  BackHandler,
-} from "react-native";
+import React, { useState } from "react";
+import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
 import Button from "../components/templates/Button";
-import mySingleton from "../components/Singleton";
 import Popup from "../components/templates/Popup";
+import Input from "../components/templates/Input";
+import Fade from "../components/effects/Fade";
+import {
+  auth,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "../config";
 
-export default function Registration({ navigation }) {
+export default function Login({ navigation }) {
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [email, setEmail] = useState("");
+
+
+  const changePassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setPopupVisible(true);
+      })
+      .catch((error) => {
+        console.error("Erreur lors du reset :", error.message);
+      });
+  };
+
   return (
     <ImageBackground
       source={require("../assets/map_hulluch.jpg")}
@@ -19,13 +32,29 @@ export default function Registration({ navigation }) {
     >
       <View style={styles.overlay}>
         <View style={styles.interface}>
-          <Image
-            style={styles.image}
-            source={require("../assets/logo_hulluch.png")}
-          />
+          <Fade>
+            <Input
+              placeholder="Email"
+              onChangeText={(text) => setEmail(text)}
+              icon="person"
+            />
+          </Fade>
+          <Fade>
+            <Button
+              label="Changer"
+              theme="secondary"
+              onPress={changePassword}
+            />
+          </Fade>
         </View>
       </View>
       <StatusBar style="auto" />
+      <Popup
+        isVisible={popupVisible}
+        alert="Demande envoyé !"
+        label="Un mail vous a été envoyé à l'adresse saisie."
+        onClose={() => navigation.navigate("Login")}
+      />
     </ImageBackground>
   );
 }
@@ -45,7 +74,6 @@ const styles = StyleSheet.create({
   },
   interface: {
     flex: 1,
-    marginBottom: 60,
     alignItems: "center",
     justifyContent: "center",
   },

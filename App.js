@@ -7,25 +7,51 @@ import Home from "./src/Home";
 import Camera from "./src/Camera";
 import Login from "./src/Login";
 import Registration from "./src/Registration";
-import { auth } from "./config"; // Assurez-vous que le chemin est correct
+import {
+  ref,
+  orderByChild,
+  startAt,
+  query,
+  onValue,
+  endAt,
+  equalTo,
+} from "firebase/database";
+import mySingleton from "./components/Singleton";
+import { auth, db } from "./config"; // Assurez-vous que le chemin est correct
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   const [ini, setIni] = useState(true);
   const [user, setUser] = useState();
-
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (ini) setIni(false);
-  }
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
+    const onAuthStateChanged = (user) => {
+      setUser(user);
+      if (ini) setIni(false);
+    };
 
-  if (ini) return null;
+    const fetchUserRole = async () => {
+      if (user) {
+        const userId = user.uid;
+        const starCountRef = ref(db, `users/${userId}/role`);
+
+        onValue(starCountRef, (snapshot) => {
+          const role = snapshot.val();
+          mySingleton.setRole(role);
+          setUserRole(role);
+        });
+      }
+    };
+
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    fetchUserRole();
+
+    return () => {
+      subscriber();
+    };
+  }, [ini, user]); // Ajoutez les dépendances appropriées ici
 
   if (!user) {
     return (
@@ -44,30 +70,54 @@ function App() {
     );
   }
 
-  return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Log"
-        component={Board}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Form"
-        component={Form}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Camera"
-        component={Camera}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
+  if (userRole === "admin") {
+    return (
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Log"
+          component={Board}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Form"
+          component={Form}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Camera"
+          component={Camera}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  }
+
+  if (userRole === "user") {
+    return (
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Form"
+          component={Form}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Camera"
+          component={Camera}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  }
 }
 
 export default () => {

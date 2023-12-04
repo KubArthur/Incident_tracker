@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import {
-  StatusBar,
-  ImageBackground,
-  View,
-  StyleSheet,
-} from "react-native";
+import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
 import Button from "../components/templates/Button";
 import Popup from "../components/templates/Popup";
 import Input from "../components/templates/Input";
 import Fade from "../components/effects/Fade";
-import { auth, signInWithEmailAndPassword } from "../config";
+import {
+  auth,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "../config";
 
 export default function Login({ navigation }) {
   const [popupVisible, setPopupVisible] = useState(false);
@@ -25,6 +24,16 @@ export default function Login({ navigation }) {
     }
   };
 
+  const changePassword = () => {
+    sendPasswordResetEmail(auth.currentUser.email)
+      .then(() => {
+        popupVisible(true);
+      })
+      .catch((error) => {
+        console.error("Erreur lors du reset :", error.message);
+      });
+  };
+
   return (
     <ImageBackground
       source={require("../assets/map_hulluch.jpg")}
@@ -36,10 +45,12 @@ export default function Login({ navigation }) {
             <Input
               placeholder="Email"
               onChangeText={(text) => setEmail(text)}
+              icon="person"
             />
             <Input
               placeholder="Mot de passe"
               onChangeText={(text) => setPassword(text)}
+              icon="lock"
             />
           </Fade>
           <Fade>
@@ -51,7 +62,7 @@ export default function Login({ navigation }) {
           </Fade>
           <Fade>
             <Button
-              label="Vous n'avez pas de compte ?"
+              label="Mot de passe oublié ?"
               theme="secondary_popup"
               onPress={() => navigation.navigate("Registration")}
             />
@@ -61,7 +72,7 @@ export default function Login({ navigation }) {
       <StatusBar style="auto" />
       <Popup
         isVisible={popupVisible}
-        alert="Erreur lors de la connection..."
+        alert="Erreur connection :"
         label="Veuillez vérifier l'adresse mail et le mot de passe."
         onClose={() => setPopupVisible(false)}
       />
