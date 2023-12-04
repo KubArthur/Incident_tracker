@@ -1,6 +1,6 @@
 import React from "react";
-import Dropdown from "./DropdownTemplates";
-import Input from "./InputTemplates";
+import Dropdown from "./Dropdown";
+import Input from "./Input";
 
 export default function DynamicFormInputs({
   pickerValue,

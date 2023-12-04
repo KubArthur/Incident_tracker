@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, Image, ImageBackground } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import Button from "../components/templates/ButtonTemplates";
-import Icon from "../components/templates/IconTemplates";
+import Button from "../components/templates/Button";
+import Icon from "../components/templates/Icon";
 import FadeInView from "../components/effects/Fade";
 
 export default function CameraScreen({ navigation, route }) {

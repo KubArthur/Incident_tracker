@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, View, Text, Image, Modal } from "react-native";
-import Icon from "../components/templates/IconTemplates";
+import Icon from "../components/templates/Icon";
 import MapView from "react-native-maps";
-import Dropdown from "../components/templates/DropdownTemplates";
+import Dropdown from "../components/templates/Dropdown";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
-import useConfigTypes from "../components/db/GetConfigTypes";
-import customMapStyle from "../components/templates/MapTemplate";
+import useConfigTypes from "../components/db/GetConfig";
+import customMapStyle from "../components/templates/MapStyle";
 import useTodoCheck from "../components/db/GetReports";
 import FadeInView from "../components/effects/Fade";
-import useMarkersRenderer from "../components/templates/MarkerTemplates";
-import Report from "../components/templates/ReportTemplates";
-import Button from "../components/templates/ButtonTemplates";
+import useMarkersRenderer from "../components/templates/Marker";
+import Report from "../components/templates/Report";
+import Button from "../components/templates/Button";
 import { format, sub } from "date-fns";
 import StatsBoard from "../components/templates/StatsBoard";
 
@@ -153,7 +153,7 @@ export default function LogPage({ navigation }) {
         {todoCheck.length === 0 && !statsEnable ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C0">
-              <Text style={styles.dataBox}>Aucune nouvelle remontée !</Text>
+              <Text style={styles.dataBox}>Aucune nouvelle remontée d'incident !</Text>
             </FadeInView>
           </View>
         ) : statsEnable ? (
@@ -161,7 +161,7 @@ export default function LogPage({ navigation }) {
         ) : !selectedMarkerId ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C1">
-              <Text style={styles.dataBox}>Press un marker...</Text>
+              <Text style={styles.dataBox}>Sélectionner un incident sur la carte...</Text>
             </FadeInView>
           </View>
         ) : selectedMarkerId ? (

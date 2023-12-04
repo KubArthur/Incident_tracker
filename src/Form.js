@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ImageBackground,
-} from "react-native";
-import Icon from "../components/templates/IconTemplates";
-import Dropdown from "../components/templates/DropdownTemplates";
-import Button from "../components/templates/ButtonTemplates";
+import { View, StyleSheet, ImageBackground } from "react-native";
+import Icon from "../components/templates/Icon";
+import Dropdown from "../components/templates/Dropdown";
+import Button from "../components/templates/Button";
 import { getCurrentPositionAsync, LocationAccuracy } from "expo-location";
-import useConfigTypes from "../components/db/GetConfigTypes";
+import useConfigTypes from "../components/db/GetConfig";
 import FadeInView from "../components/effects/Fade";
-import { sendDataToFirebase } from "../components/db/SendDataToFirebase";
-import Popup from "../components/templates/PopupTemplates";
-import DynamicFormInputs from "../components/templates/FormFieldsTemplates";
+import { sendDataToFirebase } from "../components/db/SendForm";
+import Popup from "../components/templates/Popup";
+import DynamicFormInputs from "../components/templates/FormFields";
 import mySingleton from "../components/Singleton";
 
 export default function FormPage({ navigation }) {
@@ -31,7 +27,8 @@ export default function FormPage({ navigation }) {
   const [capturedImage, setCapturedImage] = useState(null);
 
   const [popupVisible, setPopupVisible] = useState(false);
-  const [popupText, setPopupText] = useState("");
+  const [popupLabel, setPopupLabel] = useState("");
+  const [popupAlert, setPopupAlert] = useState("");
   const [needCheck, setNeedCheck] = useState(0);
 
   const handlePickerChange = (text) => {
@@ -64,7 +61,6 @@ export default function FormPage({ navigation }) {
           }
         }
       });
-      console.log("nombre de * : ", needCheck);
     });
   }, [pickerValue]);
 
@@ -73,10 +69,6 @@ export default function FormPage({ navigation }) {
       ...prevValues,
       [key]: value,
     }));
-  };
-
-  const cancel = () => {
-    navigation.navigate("Home");
   };
 
   const updateLocation = async () => {
@@ -90,7 +82,6 @@ export default function FormPage({ navigation }) {
     } catch (error) {
       console.error("Error getting location:", error);
       mySingleton.setMyBoolean1(true);
-      console.log(mySingleton.getMyBoolean1());
       navigation.navigate("Home");
     }
   };
@@ -112,7 +103,8 @@ export default function FormPage({ navigation }) {
       setUploading,
       setImage,
       setPopupVisible,
-      setPopupText,
+      setPopupLabel,
+      setPopupAlert,
       needCheck
     );
   };
@@ -172,7 +164,8 @@ export default function FormPage({ navigation }) {
 
       <Popup
         isVisible={popupVisible}
-        label={popupText}
+        alert={popupAlert}
+        label={popupLabel}
         onClose={() => setPopupVisible(false)}
       />
     </ImageBackground>

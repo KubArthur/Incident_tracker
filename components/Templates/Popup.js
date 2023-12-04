@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
-import Button from "./ButtonTemplates";
+import Button from "./Button";
 
-export default function CustomPopup({ isVisible, label, onClose }) {
+export default function CustomPopup({ isVisible, alert, label, onClose }) {
   const [loadingText, setLoadingText] = useState("Loading");
   const loadingStates = ["lll", "|ll", "l|l", "ll|"];
 
@@ -25,6 +25,7 @@ export default function CustomPopup({ isVisible, label, onClose }) {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.popup}>
+            <Text style={styles.alert}>{alert}</Text>
             <Text style={styles.label}>
               Veuillez patienter pendant la remontée de l'incident au serveur.
             </Text>
@@ -38,6 +39,7 @@ export default function CustomPopup({ isVisible, label, onClose }) {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.popup}>
+            <Text style={styles.alert}>{alert}</Text>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.button}>
               <Button theme="secondary_popup" label="OK" onPress={onClose} />
@@ -82,10 +84,18 @@ const styles = StyleSheet.create({
     color: "rgba(200, 200, 200, 1)",
     marginBottom: 45,
     fontSize: 18,
+    marginTop: 6,
+  },
+  alert: {
+    width: "84%",
+    fontWeight: "400",
+    color: "rgba(255, 255, 255, 1)",
+    fontSize: 18,
     marginTop: 16,
   },
   loading: {
-    alignItems: "right",
+    position: "absolute",
+    bottom: 0,
     color: "white",
     marginBottom: 10,
     fontSize: 30,

@@ -18,12 +18,14 @@ const sendDataToFirebase = async (
   setUploading,
   setImage,
   setPopupVisible,
-  setPopupText,
+  setPopupLabel,
+  setPopupAlert,
   needCheck
 ) => {
   if (!pickerValue.text) {
     setPopupVisible(true);
-    setPopupText("Sélectionnez un type d'incident.");
+    setPopupAlert("Erreur formulaire :");
+    setPopupLabel("Sélectionnez un type d'incident.");
     return;
   }
 
@@ -43,13 +45,15 @@ const sendDataToFirebase = async (
 
   if (isEmpty || totalAsterisks !== needCheck) {
     setPopupVisible(true);
-    setPopupText("Remplissez tous les champs obligatoires.");
+    setPopupAlert("Erreur formulaire :");
+    setPopupLabel("Remplissez tous les champs obligatoires.");
     return;
   }
 
   if (!location) {
     setPopupVisible(true);
-    setPopupText(
+    setPopupAlert("Erreur formulaire :");
+    setPopupLabel(
       "Erreur de géolocalisation. Veuillez réessayer en appuyant de nouveau sur Envoyer."
     );
     return;
@@ -57,12 +61,14 @@ const sendDataToFirebase = async (
 
   if (!image) {
     setPopupVisible(true);
-    setPopupText("Prenez une photo en appuyant Camera ");
+    setPopupAlert("Erreur formulaire :");
+    setPopupLabel("Prenez une photo en appuyant Camera ");
     return;
   }
 
   setPopupVisible(true);
-  setPopupText("traitement...");
+  setPopupAlert("Envoie en cours !");
+  setPopupLabel("traitement...");
 
   try {
     setUploading(true);

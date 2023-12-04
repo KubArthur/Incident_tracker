@@ -1,20 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"; // Add this line
 
-// Optionally import the services that you want to use
-// import {...} from "firebase/auth";
-// import {...} from "firebase/database";
-// import {...} from "firebase/firestore";
-// import {...} from "firebase/functions";
-// import {...} from "firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA5KLzhhPC0tvw1LZ0Nqh1_6eaioP1gIhs",
   authDomain: "bsim-2138e.firebaseapp.com",
-  databaseURL:
-    "https://bsim-2138e-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://bsim-2138e-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "bsim-2138e",
   storageBucket: "bsim-2138e.appspot.com",
   messagingSenderId: "388608036022",
@@ -24,9 +18,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// For more information on how to access Firebase in your project,
-// see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
+// Initialize other Firebase services
 const db = getDatabase();
 const storage = getStorage();
+const auth = getAuth();
 
-export { db, storage };
+
+export { db, storage, auth, signInWithEmailAndPassword };
+

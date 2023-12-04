@@ -7,9 +7,12 @@ import {
   Image,
   BackHandler,
 } from "react-native";
-import Button from "../components/templates/ButtonTemplates";
+import Button from "../components/templates/Button";
 import mySingleton from "../components/Singleton";
-import Popup from "../components/templates/PopupTemplates";
+import Popup from "../components/templates/Popup";
+import { signOut } from "firebase/auth"; // Importez la fonction de déconnexion de Firebase auth
+
+import { auth } from "../config";
 
 export default function HomePage({ navigation }) {
   const handleCloseApp = () => {
@@ -17,7 +20,6 @@ export default function HomePage({ navigation }) {
   };
   const [popupVisible, setPopupVisible] = useState(false);
 
-  console.log(mySingleton.getMyBoolean1());
   useEffect(() => {
     const handleMyBooleanChange = () => {
       if (mySingleton.getMyBoolean1()) {
@@ -34,6 +36,17 @@ export default function HomePage({ navigation }) {
       mySingleton.unsubscribe(handleMyBooleanChange);
     };
   }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth); // Utilisez la fonction signOut avec l'objet auth de Firebase
+      console.log("Utilisateur déconnecté");
+      // Redirigez l'utilisateur vers l'écran de connexion ou une autre page appropriée
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion :", error);
+    }
+  };
 
   return (
     <ImageBackground
@@ -59,7 +72,7 @@ export default function HomePage({ navigation }) {
           <Button
             theme="primary"
             label="Fermer l'application"
-            onPress={handleCloseApp}
+            onPress={handleSignOut}
           />
         </View>
       </View>
@@ -67,6 +80,7 @@ export default function HomePage({ navigation }) {
         <>
           <Popup
             isVisible={popupVisible}
+            alert="Erreur permission :"
             label="L'application a besoin de la localisation de l'appareil pour fonctionner."
             onClose={() => setPopupVisible(false)}
           />
@@ -76,7 +90,8 @@ export default function HomePage({ navigation }) {
         <>
           <Popup
             isVisible={popupVisible}
-            label="Une fois terminée, vous serez rédirigé sur la page d'accueil."
+            alert="Incident remontée !"
+            label="L'incident est bien remontée jusqu'au serveur."
             onClose={() => setPopupVisible(false)}
           />
           {mySingleton.setMyBoolean2(false)}

@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import FadeInView from "../effects/Fade";
-import Button from "../templates/ButtonTemplates";
-import Icon from "./IconTemplates";
+import Button from "./Button";
+import Icon from "./Icon";
 
 const CalloutBox = ({
   todoCheck,
