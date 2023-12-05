@@ -3,6 +3,7 @@ class MySingleton {
     this.myBoolean1 = true;
     this.myBoolean2 = false;
     this.role = ""; // Nouvelle propriété pour stocker le rôle
+    this.photoPath = "";
     this.listeners = new Set();
   }
 
@@ -33,6 +34,16 @@ class MySingleton {
   // Nouvelle méthode pour obtenir le rôle
   getRole() {
     return this.role;
+  }
+
+  setPhotoPath(photoPath) {
+    this.photoPath = photoPath;
+    this.notifyListeners();
+  }
+
+  // Nouvelle méthode pour obtenir le rôle
+  getPhotoPath() {
+    return this.photoPath;
   }
 
   subscribe(listener) {

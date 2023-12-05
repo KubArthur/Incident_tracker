@@ -4,20 +4,20 @@ import Button from "../components/templates/Button";
 import Popup from "../components/templates/Popup";
 import Input from "../components/templates/Input";
 import Fade from "../components/effects/Fade";
-import { auth, signInWithEmailAndPassword } from "../config";
+import { auth, sendPasswordResetEmail } from "../config";
 
-export default function Login({ navigation }) {
+export default function ResetPassword({ navigation }) {
   const [popupVisible, setPopupVisible] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const loginUser = async (email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      console.error("Erreur lors de la connexion :", error.message);
-      setPopupVisible(true);
-    }
+  const changePassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setPopupVisible(true);
+      })
+      .catch((error) => {
+        console.error("Erreur lors du reset :", error.message);
+      });
   };
 
   return (
@@ -33,31 +33,19 @@ export default function Login({ navigation }) {
               onChangeText={(text) => setEmail(text)}
               icon="person"
             />
-            <Input
-              placeholder="Mot de passe"
-              onChangeText={(text) => setPassword(text)}
-              icon="lock"
-            />
           </Fade>
           <Fade>
             <Button
-              label="Se connecter"
+              label="Changer"
               theme="secondary"
-              onPress={() => loginUser(email, password)}
+              onPress={changePassword}
             />
           </Fade>
           <Fade>
             <Button
-              label="Vous n'avez pas de compte ?"
+              label="Retour"
               theme="secondary_popup"
-              onPress={() => navigation.navigate("Registration")}
-            />
-          </Fade>
-          <Fade>
-            <Button
-              label="Mot de passe oublié ?"
-              theme="secondary_popup"
-              onPress={() => navigation.navigate("ResetPassword")}
+              onPress={() => navigation.navigate("Login")}
             />
           </Fade>
         </View>
@@ -65,9 +53,9 @@ export default function Login({ navigation }) {
       <StatusBar style="auto" />
       <Popup
         isVisible={popupVisible}
-        alert="Erreur connection :"
-        label="Veuillez vérifier l'adresse mail et le mot de passe."
-        onClose={() => setPopupVisible(false)}
+        alert="Demande envoyé !"
+        label="Un mail vous a été envoyé à l'adresse saisie."
+        onClose={() => navigation.navigate("Login")}
       />
     </ImageBackground>
   );

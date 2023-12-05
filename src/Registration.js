@@ -4,24 +4,22 @@ import Button from "../components/templates/Button";
 import Popup from "../components/templates/Popup";
 import Input from "../components/templates/Input";
 import Fade from "../components/effects/Fade";
-import {
-  auth,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "../config";
+import { auth, createUserWithEmailAndPassword } from "../config";
 
-export default function Login({ navigation }) {
+export default function Registration({ navigation }) {
   const [popupVisible, setPopupVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-
-  const changePassword = () => {
-    sendPasswordResetEmail(auth, email)
+  const createUser = () => {
+    createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         setPopupVisible(true);
       })
       .catch((error) => {
-        console.error("Erreur lors du reset :", error.message);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
       });
   };
 
@@ -38,12 +36,24 @@ export default function Login({ navigation }) {
               onChangeText={(text) => setEmail(text)}
               icon="person"
             />
+            <Input
+              placeholder="Mot de passe"
+              onChangeText={(text) => setPassword(text)}
+              icon="lock"
+            />
           </Fade>
           <Fade>
             <Button
               label="Changer"
               theme="secondary"
-              onPress={changePassword}
+              onPress={createUser}
+            />
+          </Fade>
+          <Fade>
+            <Button
+              label="Retour"
+              theme="secondary_popup"
+              onPress={() => navigation.navigate("Login")}
             />
           </Fade>
         </View>

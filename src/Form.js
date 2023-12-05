@@ -16,20 +16,14 @@ export default function FormPage({ navigation }) {
   const [inputValues, setInputValues] = useState({});
   const [location, setLocation] = useState(null);
   const [bascule, setBascule] = useState(0);
-
-  const timestamp = new Date().getTime();
-
-  const { typeData, todoData } = useConfigTypes();
-
-  const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
-
-  const [capturedImage, setCapturedImage] = useState(null);
-
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupLabel, setPopupLabel] = useState("");
   const [popupAlert, setPopupAlert] = useState("");
   const [needCheck, setNeedCheck] = useState(0);
+  const { typeData, todoData } = useConfigTypes();
+  const timestamp = new Date().getTime();
+  
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -97,11 +91,9 @@ export default function FormPage({ navigation }) {
       pickerValue,
       inputValues,
       location,
-      capturedImage,
       timestamp,
       navigation,
       setUploading,
-      setImage,
       setPopupVisible,
       setPopupLabel,
       setPopupAlert,
@@ -145,9 +137,7 @@ export default function FormPage({ navigation }) {
 
                   <Button
                     theme="secondary_addPhoto"
-                    onPress={() =>
-                      navigation.navigate("Camera", { setCapturedImage })
-                    }
+                    onPress={() => navigation.navigate("Camera")}
                     label="Prendre une photo"
                   />
                   <Button

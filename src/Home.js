@@ -15,6 +15,8 @@ import { signOut } from "firebase/auth"; // Importez la fonction de déconnexion
 import { auth } from "../config";
 
 export default function HomePage({ navigation }) {
+  const [userRole, setUserRole] = useState(mySingleton.getRole());
+
   const handleCloseApp = async () => {
     await handleSignOut();
     BackHandler.exitApp();
@@ -23,18 +25,21 @@ export default function HomePage({ navigation }) {
 
   useEffect(() => {
     const handleMyBooleanChange = () => {
-      if (mySingleton.getMyBoolean1()) {
-        setPopupVisible(true);
-      }
-      if (mySingleton.getMyBoolean2()) {
+      if (mySingleton.getMyBoolean1() || mySingleton.getMyBoolean2()) {
         setPopupVisible(true);
       }
     };
 
+    const handleRoleChange = () => {
+      setUserRole(mySingleton.getRole());
+    };
+
     mySingleton.subscribe(handleMyBooleanChange);
+    mySingleton.subscribe(handleRoleChange);
 
     return () => {
       mySingleton.unsubscribe(handleMyBooleanChange);
+      mySingleton.unsubscribe(handleRoleChange);
     };
   }, []);
 
@@ -60,12 +65,19 @@ export default function HomePage({ navigation }) {
             />
           </Fade>
           <Fade>
-            {mySingleton.getRole() === "admin" ? (
-              <Button
-                theme="primary"
-                label="Journal des incidents"
-                onPress={() => navigation.navigate("Log")}
-              />
+            {userRole === "admin" ? (
+              <>
+                <Button
+                  theme="primary"
+                  label="Journal des incidents"
+                  onPress={() => navigation.navigate("Log")}
+                />
+                <Button
+                  theme="primary"
+                  label="Paramètre stockage"
+                  onPress={() => navigation.navigate("Storage")}
+                />
+              </>
             ) : null}
 
             <Button

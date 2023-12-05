@@ -6,25 +6,20 @@ import Form from "./src/Form";
 import Home from "./src/Home";
 import Camera from "./src/Camera";
 import Login from "./src/Login";
+import ResetPassword from "./src/ResetPassword";
 import Registration from "./src/Registration";
-import {
-  ref,
-  orderByChild,
-  startAt,
-  query,
-  onValue,
-  endAt,
-  equalTo,
-} from "firebase/database";
+import Storage from "./src/Storage";
+import { ref, onValue } from "firebase/database";
 import mySingleton from "./components/Singleton";
 import { auth, db } from "./config"; // Assurez-vous que le chemin est correct
+import * as Notifications from "expo-notifications";
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   const [ini, setIni] = useState(true);
   const [user, setUser] = useState();
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     const onAuthStateChanged = (user) => {
@@ -62,6 +57,11 @@ function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="ResetPassword"
+          component={ResetPassword}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Registration"
           component={Registration}
           options={{ headerShown: false }}
@@ -70,7 +70,7 @@ function App() {
     );
   }
 
-  if (userRole === "admin") {
+  if (user && userRole === "admin") {
     return (
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
@@ -93,11 +93,16 @@ function App() {
           component={Camera}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Storage"
+          component={Storage}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     );
   }
 
-  if (userRole === "user") {
+  if (user && userRole === null) {
     return (
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen

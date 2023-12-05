@@ -12,16 +12,16 @@ const sendDataToFirebase = async (
   pickerValue,
   inputValues,
   location,
-  image,
   timestamp,
   navigation,
   setUploading,
-  setImage,
   setPopupVisible,
   setPopupLabel,
   setPopupAlert,
   needCheck
 ) => {
+  const image = mySingleton.getPhotoPath();
+
   if (!pickerValue.text) {
     setPopupVisible(true);
     setPopupAlert("Erreur formulaire :");
@@ -59,7 +59,7 @@ const sendDataToFirebase = async (
     return;
   }
 
-  if (!image) {
+  if (image === "") {
     setPopupVisible(true);
     setPopupAlert("Erreur formulaire :");
     setPopupLabel("Prenez une photo en appuyant Camera ");
@@ -68,7 +68,7 @@ const sendDataToFirebase = async (
 
   setPopupVisible(true);
   setPopupAlert("Envoie en cours !");
-  setPopupLabel("traitement...");
+  setPopupLabel("send");
 
   try {
     setUploading(true);
@@ -87,9 +87,10 @@ const sendDataToFirebase = async (
       xhr.open("GET", uri, true);
       xhr.send(null);
     });
-
     // Créer une référence dans le stockage Firebase
+
     const filename = image.substring(image.lastIndexOf("/") + 1);
+
     const storageRef = refStorage(storage, filename);
 
     // Mettre le fichier image dans le stockage
@@ -112,7 +113,7 @@ const sendDataToFirebase = async (
     setUploading(false);
 
     // Réinitialiser l'état de l'image
-    setImage(null);
+    mySingleton.setPhotoPath("");
 
     // Naviguer vers l'écran d'accueil
     mySingleton.setMyBoolean2(true);

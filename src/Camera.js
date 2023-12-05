@@ -5,6 +5,7 @@ import * as MediaLibrary from "expo-media-library";
 import Button from "../components/templates/Button";
 import Icon from "../components/templates/Icon";
 import FadeInView from "../components/effects/Fade";
+import mySingleton from "../components/Singleton";
 
 export default function CameraScreen({ navigation, route }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -12,8 +13,6 @@ export default function CameraScreen({ navigation, route }) {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
-
-  const { setCapturedImage } = route.params;
 
   useEffect(() => {
     (async () => {
@@ -40,7 +39,7 @@ export default function CameraScreen({ navigation, route }) {
     if (image) {
       try {
         const asset = await MediaLibrary.createAssetAsync(image);
-        setCapturedImage(image);
+        mySingleton.setPhotoPath(image);
         setImage(null);
         navigation.goBack();
       } catch (error) {

@@ -20,7 +20,7 @@ export default function CustomPopup({ isVisible, alert, label, onClose }) {
     return () => clearInterval(intervalId);
   }, []);
 
-  return label === "traitement..." ? (
+  return label === "send" ? (
     <Modal visible={isVisible} transparent={true}>
       <View style={styles.overlay}>
         <View style={styles.container}>
@@ -28,6 +28,20 @@ export default function CustomPopup({ isVisible, alert, label, onClose }) {
             <Text style={styles.alert}>{alert}</Text>
             <Text style={styles.label}>
               Veuillez patienter pendant la remontée de l'incident au serveur.
+            </Text>
+            <Text style={styles.loading}>{loadingText}</Text>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  ) : label === "delete" ? (
+    <Modal visible={isVisible} transparent={true}>
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={styles.popup}>
+            <Text style={styles.alert}>{alert}</Text>
+            <Text style={styles.label}>
+              Veuillez patienter pendant la libération d'espace de stockage.
             </Text>
             <Text style={styles.loading}>{loadingText}</Text>
           </View>
