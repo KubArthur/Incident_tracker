@@ -1,9 +1,10 @@
 class MySingleton {
   constructor() {
-    this.myBoolean1 = true;
+    this.myBoolean1 = false;
     this.myBoolean2 = false;
     this.role = ""; // Nouvelle propriété pour stocker le rôle
     this.photoPath = "";
+    this.NotificationCheck = false;
     this.listeners = new Set();
   }
 
@@ -26,8 +27,8 @@ class MySingleton {
   }
 
   // Nouvelle méthode pour définir le rôle
-  setRole(role) {
-    this.role = role;
+  setRole(value) {
+    this.role = value;
     this.notifyListeners();
   }
 
@@ -36,14 +37,24 @@ class MySingleton {
     return this.role;
   }
 
-  setPhotoPath(photoPath) {
-    this.photoPath = photoPath;
+  setPhotoPath(value) {
+    this.photoPath = value;
     this.notifyListeners();
   }
 
   // Nouvelle méthode pour obtenir le rôle
   getPhotoPath() {
     return this.photoPath;
+  }
+
+  setNotificationCheck(value) {
+    this.NotificationCheck = value;
+    this.notifyListeners();
+  }
+
+  // Nouvelle méthode pour obtenir le rôle
+  getNotificationCheck() {
+    return this.NotificationCheck;
   }
 
   subscribe(listener) {

@@ -15,31 +15,50 @@ import { signOut } from "firebase/auth"; // Importez la fonction de déconnexion
 import { auth } from "../config";
 
 export default function HomePage({ navigation }) {
+  const [popupLabel, setPopupLabel] = useState("");
+  const [popupAlert, setPopupAlert] = useState("");
   const [userRole, setUserRole] = useState(mySingleton.getRole());
+  const [popupVisible, setPopupVisible] = useState(false);
 
   const handleCloseApp = async () => {
     await handleSignOut();
     BackHandler.exitApp();
   };
-  const [popupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
-    const handleMyBooleanChange = () => {
-      if (mySingleton.getMyBoolean1() || mySingleton.getMyBoolean2()) {
+    const handleBooleanChanges = () => {
+      if (mySingleton.getMyBoolean1()) {
         setPopupVisible(true);
+        setPopupAlert("Erreur permission :");
+        setPopupLabel(
+          "L'application a besoin de la localisation de l'appareil pour fonctionner."
+        );
+      }
+      if (mySingleton.getMyBoolean2()) {
+        setPopupVisible(true);
+        setPopupAlert("Incident remontée !");
+        setPopupLabel("L'incident est bien remontée jusqu'au serveur.");
       }
     };
 
     const handleRoleChange = () => {
-      setUserRole(mySingleton.getRole());
+      setUserRole((prevRole) => {
+        if (
+          mySingleton.getMyBoolean1() === false &&
+          mySingleton.getMyBoolean2() === false
+        ) {
+          return mySingleton.getRole();
+        }
+        return prevRole;
+      });
     };
 
-    mySingleton.subscribe(handleMyBooleanChange);
     mySingleton.subscribe(handleRoleChange);
+    mySingleton.subscribe(handleBooleanChanges);
 
     return () => {
-      mySingleton.unsubscribe(handleMyBooleanChange);
       mySingleton.unsubscribe(handleRoleChange);
+      mySingleton.unsubscribe(handleBooleanChanges);
     };
   }, []);
 
@@ -93,27 +112,18 @@ export default function HomePage({ navigation }) {
           </Fade>
         </View>
       </View>
-      {mySingleton.getMyBoolean1() ? (
-        <>
-          <Popup
-            isVisible={popupVisible}
-            alert="Erreur permission :"
-            label="L'application a besoin de la localisation de l'appareil pour fonctionner."
-            onClose={() => setPopupVisible(false)}
-          />
-          {mySingleton.setMyBoolean1(false)}
-        </>
-      ) : mySingleton.getMyBoolean2() ? (
-        <>
-          <Popup
-            isVisible={popupVisible}
-            alert="Incident remontée !"
-            label="L'incident est bien remontée jusqu'au serveur."
-            onClose={() => setPopupVisible(false)}
-          />
-          {mySingleton.setMyBoolean2(false)}
-        </>
-      ) : null}
+
+      <Popup
+        isVisible={popupVisible}
+        alert={popupAlert}
+        label={popupLabel}
+        onClose={() => {
+          setPopupVisible(false);
+          mySingleton.setMyBoolean1(false);
+          mySingleton.setMyBoolean2(false);
+        }}
+      />
+
       <StatusBar style="auto" />
     </ImageBackground>
   );

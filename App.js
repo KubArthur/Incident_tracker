@@ -12,7 +12,18 @@ import Storage from "./src/Storage";
 import { ref, onValue } from "firebase/database";
 import mySingleton from "./components/Singleton";
 import { auth, db } from "./config"; // Assurez-vous que le chemin est correct
+import notificationHandler from "./components/db/TriggerNotification";
+import { scheduleNotification } from "./components/Notification";
 import * as Notifications from "expo-notifications";
+import * as TaskManager from 'expo-task-manager';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +58,24 @@ function App() {
       subscriber();
     };
   }, [ini, user]); // Ajoutez les dépendances appropriées ici
+
+  useEffect(() => {
+    const checkNotifications = async () => {
+      if (user && userRole === "admin") {
+        notificationHandler();
+
+        if (mySingleton.getNotificationCheck()) {
+          scheduleNotification();
+        }
+      } else {
+        console.log("not concern");
+      }
+    };
+
+    checkNotifications();
+    const intervalId = setInterval(checkNotifications, 6000);
+    return () => clearInterval(intervalId);
+  }, [user, userRole]);
 
   if (!user) {
     return (
