@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
-import Button from "../components/templates/Button";
-import Popup from "../components/templates/Popup";
+import Button from "../components/templates/Buttons";
+import Popup from "../components/templates/Popups";
 import Input from "../components/templates/Input";
 import Fade from "../components/effects/Fade";
 import { auth, signInWithEmailAndPassword } from "../config";

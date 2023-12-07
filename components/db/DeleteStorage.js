@@ -18,11 +18,9 @@ const deletePhotos = async (date) => {
     for (const itemRef of items) {
       const metadata = await getMetadata(itemRef);
 
-      // Check the creation time of the file
       const fileCreatedTime = new Date(metadata.timeCreated);
 
       if (fileCreatedTime < currentDate) {
-        // Delete the file if it was created after the specified date
         await deleteObject(itemRef);
       }
     }

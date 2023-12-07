@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
-import Icon from "../components/templates/Icon";
-import Dropdown from "../components/templates/Dropdown";
-import Button from "../components/templates/Button";
-import { getCurrentPositionAsync, LocationAccuracy } from "expo-location";
+import Icon from "../components/templates/Icons";
+import Dropdown from "../components/templates/Dropdowns";
+import Button from "../components/templates/Buttons";
+import { getCurrentPositionAsync, requestForegroundPermissionsAsync, LocationAccuracy } from "expo-location";
 import useConfigTypes from "../components/db/GetConfig";
 import FadeInView from "../components/effects/Fade";
-import { sendDataToFirebase } from "../components/db/SendForm";
-import Popup from "../components/templates/Popup";
+import { sendDataToFirebase } from "../components/db/PutForm";
+import Popup from "../components/templates/Popups";
 import DynamicFormInputs from "../components/templates/FormFields";
 import mySingleton from "../components/Singleton";
 
@@ -31,6 +31,7 @@ export default function FormPage({ navigation }) {
       text,
     }));
     setInputValues({});
+    mySingleton.setPhotoPath("");
     const bascule = 1;
     setBascule(bascule);
   };
@@ -67,12 +68,23 @@ export default function FormPage({ navigation }) {
 
   const updateLocation = async () => {
     try {
-      let location = await getCurrentPositionAsync({
-        accuracy: LocationAccuracy.Highest,
-      });
-
-      location = location.coords.latitude + ";" + location.coords.longitude;
-      setLocation(location);
+      // Demander les autorisations de localisation
+      const { status } = await requestForegroundPermissionsAsync();
+      
+      if (status === "granted") {
+        // Si les autorisations sont accordées, obtenir la position actuelle
+        let location = await getCurrentPositionAsync({
+          accuracy: LocationAccuracy.Highest,
+        });
+  
+        location = location.coords.latitude + ";" + location.coords.longitude;
+        setLocation(location);
+      } else {
+        // Si les autorisations sont refusées, traiter en conséquence
+        console.warn("Permission to access location was denied");
+        mySingleton.setMyBoolean1(true);
+        navigation.navigate("Home");
+      }
     } catch (error) {
       console.error("Error getting location:", error);
       mySingleton.setMyBoolean1(true);

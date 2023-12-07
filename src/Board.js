@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, View, Text, Image, Modal } from "react-native";
-import Icon from "../components/templates/Icon";
+import Icon from "../components/templates/Icons";
 import MapView from "react-native-maps";
-import Dropdown from "../components/templates/Dropdown";
+import Dropdown from "../components/templates/Dropdowns";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
 import useConfigTypes from "../components/db/GetConfig";
 import customMapStyle from "../components/templates/MapStyle";
 import useTodoCheck from "../components/db/GetReports";
 import FadeInView from "../components/effects/Fade";
-import useMarkersRenderer from "../components/templates/Marker";
-import Report from "../components/templates/Report";
-import Button from "../components/templates/Button";
+import useMarkersRenderer from "../components/templates/Markers";
+import Report from "../components/templates/Reports";
+import Button from "../components/templates/Buttons";
 import { format, sub } from "date-fns";
 import StatsBoard from "../components/templates/StatsBoard";
 

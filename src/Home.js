@@ -5,11 +5,10 @@ import {
   View,
   StyleSheet,
   Image,
-  BackHandler,
 } from "react-native";
-import Button from "../components/templates/Button";
+import Button from "../components/templates/Buttons";
 import mySingleton from "../components/Singleton";
-import Popup from "../components/templates/Popup";
+import Popup from "../components/templates/Popups";
 import Fade from "../components/effects/Fade";
 import { signOut } from "firebase/auth"; // Importez la fonction de déconnexion de Firebase auth
 import { auth } from "../config";
@@ -19,11 +18,6 @@ export default function HomePage({ navigation }) {
   const [popupAlert, setPopupAlert] = useState("");
   const [userRole, setUserRole] = useState(mySingleton.getRole());
   const [popupVisible, setPopupVisible] = useState(false);
-
-  const handleCloseApp = async () => {
-    await handleSignOut();
-    BackHandler.exitApp();
-  };
 
   useEffect(() => {
     const handleBooleanChanges = () => {
@@ -93,22 +87,34 @@ export default function HomePage({ navigation }) {
                 />
                 <Button
                   theme="primary"
-                  label="Paramètre stockage"
+                  label="Remonter un incident"
+                  onPress={() => navigation.navigate("Form")}
+                />
+                <Button
+                  theme="primary"
+                  label="Paramètre de stockage"
                   onPress={() => navigation.navigate("Storage")}
                 />
+                <Button
+                  theme="primary"
+                  label="Se déconnecter"
+                  onPress={handleSignOut}
+                />
               </>
-            ) : null}
-
-            <Button
-              theme="primary"
-              label="Remonter des incidents"
-              onPress={() => navigation.navigate("Form")}
-            />
-            <Button
-              theme="primary"
-              label="Fermer l'application"
-              onPress={handleSignOut}
-            />
+            ) : (
+              <>
+                <Button
+                  theme="primary"
+                  label="Remonter un incident"
+                  onPress={() => navigation.navigate("Form")}
+                />
+                <Button
+                  theme="primary"
+                  label="Se déconnecter"
+                  onPress={handleSignOut}
+                />
+              </>
+            )}
           </Fade>
         </View>
       </View>

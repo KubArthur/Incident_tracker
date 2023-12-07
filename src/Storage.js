@@ -1,11 +1,9 @@
-// FileDeletionButton.js
 import React, { useState } from "react";
-import { View, Alert, ImageBackground, StyleSheet } from "react-native";
-import { deletePhotos } from "../components/db/DeletePhotos";
+import { View, Text, ImageBackground, StyleSheet } from "react-native";
+import { deletePhotos } from "../components/db/DeleteStorage";
 import Fade from "../components/effects/Fade";
-import Button from "../components/templates/Button";
-import Icon from "../components/templates/Icon";
-import Popup from "../components/templates/Popup";
+import Button from "../components/templates/Buttons";
+import Popup from "../components/templates/Popups";
 
 export default function Storage({ navigation }) {
   const [popupVisible, setPopupVisible] = useState(false);
@@ -17,7 +15,7 @@ export default function Storage({ navigation }) {
       setPopupVisible(true);
       setPopupAlert("Suppresion des données !");
       setPopupLabel("delete");
-      await deletePhotos(new Date("2023-11-18")); // Remplacez la date par la date souhaitée
+      await deletePhotos(new Date("2023-11-22"));
       setPopupVisible(true);
       setPopupAlert("Terminé !");
       setPopupLabel("Fichiers supprimés avec succès.");
@@ -40,12 +38,17 @@ export default function Storage({ navigation }) {
       <View style={styles.overlay}>
         <View style={styles.interface}>
           <Fade>
-            <Icon theme="home" onPress={() => navigation.navigate("Home")} />
+            <Text>Voulez-vous libérer de l'espace dans storage ?</Text>
           </Fade>
           <Fade>
             <Button
-              theme="secondary"
-              label="Nettoyer storage"
+              theme="secondary_small"
+              label="Oui"
+              onPress={handleDeletePress}
+            />
+            <Button
+              theme="secondary_small"
+              label="Non"
               onPress={handleDeletePress}
             />
           </Fade>

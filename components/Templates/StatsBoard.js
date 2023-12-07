@@ -2,17 +2,14 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const StatsBoard = ({ todoCheck, periodes }) => {
-  // Convertir les timestamps en objets Date
   const itemsWithDate = todoCheck.map((item) => ({
     type: item.type,
     timestamp: item.timestamp,
     date: new Date(item.timestamp),
   }));
 
-  // Trier les éléments par date
   const sortedItems = itemsWithDate.sort((a, b) => a.date - b.date);
 
-  // Filtrer les éléments en fonction de la période spécifiée
   const filteredItems = sortedItems.filter((item) => {
     const year = item.date.getFullYear();
     return periodes.text !== undefined
@@ -20,10 +17,9 @@ const StatsBoard = ({ todoCheck, periodes }) => {
       : null;
   });
 
-  // Séparer les éléments par année et par mois
   const groupedItems = filteredItems.reduce((acc, item) => {
     const year = item.date.getFullYear();
-    const month = item.date.getMonth() + 1; // Les mois commencent à partir de 0
+    const month = item.date.getMonth() + 1;
     if (!acc[year]) {
       acc[year] = {};
     }
@@ -33,8 +29,7 @@ const StatsBoard = ({ todoCheck, periodes }) => {
     acc[year][month].push(item);
     return acc;
   }, {});
-
-  // Obtenir le nombre de types par mois
+  
   const typesPerMonth = Object.keys(groupedItems).reduce((result, year) => {
     result[year] = {};
     Object.keys(groupedItems[year]).forEach((month) => {

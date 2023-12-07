@@ -1,14 +1,19 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from "firebase/auth"; // Add this line
-
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  createUserWithEmailAndPassword,
+} from "firebase/auth"; // Add this line
 
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA5KLzhhPC0tvw1LZ0Nqh1_6eaioP1gIhs",
   authDomain: "bsim-2138e.firebaseapp.com",
-  databaseURL: "https://bsim-2138e-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:
+    "https://bsim-2138e-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "bsim-2138e",
   storageBucket: "bsim-2138e.appspot.com",
   messagingSenderId: "388608036022",
@@ -23,6 +28,11 @@ const db = getDatabase();
 const storage = getStorage();
 const auth = getAuth();
 
-
-export { db, storage, auth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword };
-
+export {
+  db,
+  storage,
+  auth,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  createUserWithEmailAndPassword,
+};

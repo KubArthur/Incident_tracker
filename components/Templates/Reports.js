@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import FadeInView from "../effects/Fade";
-import Button from "./Button";
-import Icon from "./Icon";
+import Icon from "./Icons";
 
 const CalloutBox = ({
   todoCheck,
@@ -18,7 +17,9 @@ const CalloutBox = ({
       style={{
         ...styles.callout,
         height:
-          Object.keys(item?.inputValues || {}).length > 0 ? 90 + 30 * Object.keys(item?.inputValues || {}).length : 50,
+          Object.keys(item?.inputValues || {}).length > 0
+            ? 90 + 30 * Object.keys(item?.inputValues || {}).length
+            : 150,
       }}
     >
       <FadeInView key={selectedMarkerId}>
@@ -37,18 +38,26 @@ const CalloutBox = ({
                 })}
               </Text>
 
-              {Object.keys(item.inputValues)
-                .reverse()
-                .map((key) => {
-                  // Vérifier si le dernier caractère est un *
-                  const cleanedKey = key.endsWith("*") ? key.slice(0, -1) : key;
+              {!item.inputValues ? (
+                <Text style={styles.dataBox}>
+                  Aucune data
+                </Text>
+              ) : (
+                Object.keys(item.inputValues)
+                  .reverse()
+                  .map((key) => {
+                    // Vérifier si le dernier caractère est un *
+                    const cleanedKey = key.endsWith("*")
+                      ? key.slice(0, -1)
+                      : key;
 
-                  return (
-                    <Text style={styles.dataBox} key={key}>
-                      {cleanedKey} : {item.inputValues[key]}
-                    </Text>
-                  );
-                })}
+                    return (
+                      <Text style={styles.dataBox} key={key}>
+                        {cleanedKey} : {item.inputValues[key]}
+                      </Text>
+                    );
+                  })
+              )}
             </View>
             <View style={styles.rightContent}>
               <Icon
@@ -61,13 +70,15 @@ const CalloutBox = ({
                 theme="picture-o"
                 onPress={() => handleImagePress(item.image)}
               />
-              <Icon
-                theme="archive"
-                onPress={() => {
-                  upData();
-                  setCalloutBox(false);
-                }}
-              />
+              {item.read === false ? (
+                <Icon
+                  theme="archive"
+                  onPress={() => {
+                    upData();
+                    setCalloutBox(false);
+                  }}
+                />
+              ) : null}
             </View>
           </View>
         )}

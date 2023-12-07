@@ -5,7 +5,6 @@ import {
   startAt,
   query,
   onValue,
-  endAt,
   equalTo,
 } from "firebase/database";
 import { db } from "../../config";

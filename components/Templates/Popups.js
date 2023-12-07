@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
-import Button from "./Button";
+import Button from "./Buttons";
 
 export default function CustomPopup({ isVisible, alert, label, onClose }) {
   const [loadingText, setLoadingText] = useState("Loading");

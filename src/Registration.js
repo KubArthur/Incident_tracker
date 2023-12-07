@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
-import Button from "../components/templates/Button";
-import Popup from "../components/templates/Popup";
+import Button from "../components/templates/Buttons";
 import Input from "../components/templates/Input";
 import Fade from "../components/effects/Fade";
-import { auth, createUserWithEmailAndPassword } from "../config";
+import {
+  auth,
+  createUserWithEmailAndPassword
+} from "../config";
 
 export default function Registration({ navigation }) {
   const [popupVisible, setPopupVisible] = useState(false);
@@ -13,9 +15,6 @@ export default function Registration({ navigation }) {
 
   const createUser = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        setPopupVisible(true);
-      })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -43,11 +42,7 @@ export default function Registration({ navigation }) {
             />
           </Fade>
           <Fade>
-            <Button
-              label="Changer"
-              theme="secondary"
-              onPress={createUser}
-            />
+            <Button label="Créer un compte" theme="secondary" onPress={createUser} />
           </Fade>
           <Fade>
             <Button
@@ -59,12 +54,6 @@ export default function Registration({ navigation }) {
         </View>
       </View>
       <StatusBar style="auto" />
-      <Popup
-        isVisible={popupVisible}
-        alert="Demande envoyé !"
-        label="Un mail vous a été envoyé à l'adresse saisie."
-        onClose={() => navigation.navigate("Login")}
-      />
     </ImageBackground>
   );
 }
@@ -86,10 +75,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  image: {
-    margin: 10,
-    width: 160,
-    height: 113,
   },
 });

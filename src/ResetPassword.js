@@ -1,7 +1,15 @@
-import React, { useState } from "react";
-import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
-import Button from "../components/templates/Button";
-import Popup from "../components/templates/Popup";
+import React, { useState, useRef } from "react";
+import {
+  StatusBar,
+  ImageBackground,
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from "react-native";
+import Button from "../components/templates/Buttons";
+import Popup from "../components/templates/Popups";
 import Input from "../components/templates/Input";
 import Fade from "../components/effects/Fade";
 import { auth, sendPasswordResetEmail } from "../config";
@@ -9,6 +17,7 @@ import { auth, sendPasswordResetEmail } from "../config";
 export default function ResetPassword({ navigation }) {
   const [popupVisible, setPopupVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const inputRef = useRef(null);
 
   const changePassword = () => {
     sendPasswordResetEmail(auth, email)
@@ -20,41 +29,59 @@ export default function ResetPassword({ navigation }) {
       });
   };
 
+  const handleInputFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const handleKeyboardDidShow = () => {
+    // Ajuster la position du composant lorsque le clavier est ouvert
+    handleInputFocus();
+  };
+
   return (
     <ImageBackground
       source={require("../assets/map_hulluch.jpg")}
       style={styles.container}
     >
-      <View style={styles.overlay}>
-        <View style={styles.interface}>
-          <Fade>
-            <Input
-              placeholder="Email"
-              onChangeText={(text) => setEmail(text)}
-              icon="person"
-            />
-          </Fade>
-          <Fade>
-            <Button
-              label="Changer"
-              theme="secondary"
-              onPress={changePassword}
-            />
-          </Fade>
-          <Fade>
-            <Button
-              label="Retour"
-              theme="secondary_popup"
-              onPress={() => navigation.navigate("Login")}
-            />
-          </Fade>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={styles.keyboardAvoidingContainer}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.interface}>
+            <Fade>
+              <Input
+                ref={inputRef}
+                placeholder="Email"
+                onChangeText={(text) => setEmail(text)}
+                icon="person"
+                onFocus={handleKeyboardDidShow}
+              />
+            </Fade>
+            <Fade>
+              <Button
+                label="Envoyé"
+                theme="secondary"
+                onPress={changePassword}
+              />
+            </Fade>
+            <Fade>
+              <Button
+                label="Retour"
+                theme="secondary_popup"
+                onPress={() => navigation.navigate("Login")}
+              />
+            </Fade>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
       <StatusBar style="auto" />
       <Popup
         isVisible={popupVisible}
         alert="Demande envoyé !"
-        label="Un mail vous a été envoyé à l'adresse saisie."
+        label="Un mail a été envoyé à l'adresse saisie."
         onClose={() => navigation.navigate("Login")}
       />
     </ImageBackground>
@@ -63,25 +90,20 @@ export default function ResetPassword({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: "100%",
     height: "100%",
   },
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
   overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
+    flex: 1,
     backgroundColor: "rgba(0, 0, 15, 0.8)",
   },
   interface: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  image: {
-    margin: 10,
-    width: 160,
-    height: 113,
   },
 });

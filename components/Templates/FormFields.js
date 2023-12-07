@@ -1,5 +1,5 @@
 import React from "react";
-import Dropdown from "./Dropdown";
+import Dropdown from "./Dropdowns";
 import Input from "./Input";
 
 export default function DynamicFormInputs({

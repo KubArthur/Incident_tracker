@@ -12,10 +12,12 @@ export default function useMarkersRenderer(
     ? todoCheck.filter((item) => {
         const year = new Date(item.timestamp).getFullYear().toString();
         return periodes.text !== undefined
-      ? periodes.text.includes(year.toString())
-      : null;
+          ? periodes.text.includes(year.toString())
+          : null;
       })
-    : todoCheck.filter((item) => !pickerValue.text || item.type === pickerValue.text);
+    : todoCheck.filter(
+        (item) => !pickerValue.text || item.type === pickerValue.text
+      );
 
   return filteredTodoCheck.map((item) => {
     let imageSource;
@@ -29,8 +31,11 @@ export default function useMarkersRenderer(
       case "Voiture ventouse":
         imageSource = require("../../assets/car.png");
         break;
+      case "Dépôt sauvages":
+        imageSource = require("../../assets/waste.png");
+        break;
       default:
-        imageSource = require("../../assets/network.png");
+        imageSource = require("../../assets/flood.png");
     }
 
     const location = item.location || "";

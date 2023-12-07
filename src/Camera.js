@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, Image, ImageBackground } from "react-native";
+import React, { useState, useEffect, useRef } from "react";import { Text, View, StyleSheet, Image, ImageBackground, Animated } from "react-native";
+
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import Button from "../components/templates/Button";
-import Icon from "../components/templates/Icon";
+import Button from "../components/templates/Buttons";
+import Icon from "../components/templates/Icons";
 import FadeInView from "../components/effects/Fade";
-import mySingleton from "../components/Singleton";
+import mySingleton from "../components/Singleton";import 'react-native-gesture-handler';
 
 export default function CameraScreen({ navigation, route }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -13,7 +13,7 @@ export default function CameraScreen({ navigation, route }) {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
-
+  const [zoom, setZoom] = useState(1);
   useEffect(() => {
     (async () => {
       MediaLibrary.requestPermissionsAsync();
@@ -55,7 +55,10 @@ export default function CameraScreen({ navigation, route }) {
   const onCancel = () => {
     navigation.goBack();
   };
-
+  const onPinchGestureEvent = Animated.event(
+    [{ nativeEvent: { scale: zoom } }],
+    { useNativeDriver: false }
+  );
   return (
     <ImageBackground
       source={require("../assets/map_hulluch.jpg")} // Provide the path to your local image
@@ -63,13 +66,16 @@ export default function CameraScreen({ navigation, route }) {
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          {!image ? (
+          {!image ? (    <PinchGestureHandler onGestureEvent={onPinchGestureEvent}>
+            <Animated.View style={StyleSheet.absoluteFill}>
             <Camera
-              style={styles.camera}
-              type={type}
-              ref={cameraRef}
-              flashMode={flash}
-            >
+  style={styles.camera}
+  type={type}
+  ref={cameraRef}
+  flashMode={flash}
+  onPinchGestureEvent={onPinchGestureEvent}
+  zoom={zoom}
+>
               <View style={styles.controls}>
                 <Button
                   label="Retour"
@@ -92,7 +98,8 @@ export default function CameraScreen({ navigation, route }) {
                   effect={flash}
                 />
               </View>
-            </Camera>
+            </Camera> </Animated.View>
+          </PinchGestureHandler>
           ) : image ? (
             <>
               <FadeInView key="id_default-0">
