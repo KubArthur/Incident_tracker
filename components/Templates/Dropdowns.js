@@ -41,7 +41,7 @@ export default function DropdownTemplates({
       listHeaderComponent={
         <Text
           style={{
-            color: "deepskyblue",
+            color: "#2baf9a",
             fontSize: 22,
             textAlign: "center",
             marginBottom: 10,
@@ -51,28 +51,29 @@ export default function DropdownTemplates({
           {placeholder}
         </Text>
       }
-      primaryColor={"deepskyblue"}
+      primaryColor={"#2baf9a"}
       dropdownStyle={{
         backgroundColor: "none",
-        paddingVertical: 7,
+        paddingVertical: 1,
         paddingHorizontal: 10,
         minHeight: 40,
+        maxHeight: 40,
         borderColor: "white",
         borderRadius: 6,
         borderWidth: 2,
       }}
       dropdownIconStyle={{ top: -100, right: -100 }}
-      dropdownContainerStyle={{ marginBottom: 10, width: 220 }}
+      dropdownContainerStyle={{ marginBottom: 10, minWidth: "60%", maxWidth: "60%" }}
       modalOptionsContainerStyle={{
         padding: 10,
         paddingBottom: 10,
-        backgroundColor: "rgba(150, 150, 150, 1)",
+        backgroundColor: "rgba(60, 60, 60, 1)",
       }}
       modalBackgroundStyle={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
       selectedItemStyle={{
-        color: "deepskyblue",
+        color: "#2baf9a",
         fontWeight: "700",
         fontSize: 18,
       }}
@@ -84,8 +85,8 @@ export default function DropdownTemplates({
       checkboxComponentStyles={{
         checkboxSize: 10,
         checkboxStyle: {
-          backgroundColor: "deepskyblue",
-          borderRadius: 30, // To get a circle - add the checkboxSize and the padding size
+          backgroundColor: "#2baf9a",
+          borderRadius: 8, // To get a circle - add the checkboxSize and the padding size
           padding: 5,
         },
         checkboxLabelStyle: { color: "white", fontSize: 20 },
@@ -103,7 +104,7 @@ export default function DropdownTemplates({
       listHeaderComponent={
         <Text
           style={{
-            color: "deepskyblue",
+            color: "#2baf9a",
             fontSize: 22,
             textAlign: "center",
             marginBottom: 10,
@@ -118,7 +119,7 @@ export default function DropdownTemplates({
         selectAllText: "Cocher tout",
         unselectAllText: "Décocher tout",
       }}
-      primaryColor={"deepskyblue"}
+      primaryColor={"#2baf9a"}
       dropdownStyle={{
         backgroundColor: "none",
         paddingVertical: 1,
@@ -130,17 +131,17 @@ export default function DropdownTemplates({
         borderWidth: 2,
       }}
       dropdownIconStyle={{ top: -100, right: -100 }}
-      dropdownContainerStyle={{ marginBottom: 10, width: 220 }}
+      dropdownContainerStyle={{ marginBottom: 15, minWidth: "60%" }}
       modalOptionsContainerStyle={{
         padding: 10,
         paddingBottom: 10,
-        backgroundColor: "rgba(150, 150, 150, 1)",
+        backgroundColor: "rgba(60, 60, 60, 1)",
       }}
       modalBackgroundStyle={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
       selectedItemStyle={{
-        color: "deepskyblue",
+        color: "#2baf9a",
         fontWeight: "700",
         fontSize: 18,
       }}
@@ -152,7 +153,7 @@ export default function DropdownTemplates({
       checkboxComponentStyles={{
         checkboxSize: 10,
         checkboxStyle: {
-          backgroundColor: "deepskyblue",
+          backgroundColor: "#2baf9a",
           borderRadius: 8, // To get a circle - add the checkboxSize and the padding size
           padding: 5,
         },

@@ -23,7 +23,7 @@ export default function IconTemplates({ theme, onPress, effect }) {
   ) : theme === "camera" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
-      style={[styles.buttonContainer_b, styles.bn35]}
+      style={[styles.buttonContainer_br, styles.bn35]}
     >
       <FontAwesome name={theme} size={44} color="white" />
     </TouchableOpacity>
@@ -46,7 +46,7 @@ export default function IconTemplates({ theme, onPress, effect }) {
       <Ionicons
         name="stats-chart"
         size={24}
-        color={effect ? "deepskyblue" : "white"}
+        color={effect ? "#2baf9a" : "white"}
         marginTop={10}
       />
     </TouchableOpacity>
@@ -93,6 +93,17 @@ const styles = StyleSheet.create({
     width: 70,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
+  buttonContainer_br: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 120,
+    height: 80,
+    width: 80,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+  },
   buttonContainer_s: {
     display: "flex",
     flexDirection: "row",
@@ -118,8 +129,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 1)",
   },
   bn35: {
-    borderWidth: 2,
-    borderColor: "deepskyblue",
+    borderWidth: 3,
+    borderColor: "#2baf9a",
   },
   bn36: {
     borderWidth: 2,

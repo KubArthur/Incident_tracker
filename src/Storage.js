@@ -38,19 +38,25 @@ export default function Storage({ navigation }) {
       <View style={styles.overlay}>
         <View style={styles.interface}>
           <Fade>
-            <Text>Voulez-vous libérer de l'espace dans storage ?</Text>
+            <Text style={styles.dataBox}>
+              Voulez-vous libérer de l'espace de stockage dans storage ?
+            </Text>
           </Fade>
           <Fade>
-            <Button
-              theme="secondary_small"
-              label="Oui"
-              onPress={handleDeletePress}
-            />
-            <Button
-              theme="secondary_small"
-              label="Non"
-              onPress={handleDeletePress}
-            />
+            <View style={styles.fixToText}>
+              <View style={{ marginRight: 20 }}>
+                <Button
+                  theme="secondary_small"
+                  label="Oui"
+                  onPress={handleDeletePress}
+                />
+              </View>
+              <Button
+                theme="secondary_small"
+                label="Non"
+                onPress={() => navigation.navigate("Home")}
+              />
+            </View>
           </Fade>
         </View>
       </View>
@@ -84,9 +90,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  image: {
-    margin: 10,
-    width: 160,
-    height: 113,
+  dataBox: {
+    maxWidth: "65%",
+    textAlign: "center",
+    color: "white",
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  fixToText: {
+    flexDirection: "row",
   },
 });

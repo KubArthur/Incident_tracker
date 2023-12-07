@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import FadeInView from "../effects/Fade";
 import Icon from "./Icons";
 
@@ -18,14 +18,14 @@ const CalloutBox = ({
         ...styles.callout,
         height:
           Object.keys(item?.inputValues || {}).length > 0
-            ? 90 + 30 * Object.keys(item?.inputValues || {}).length
+            ? 100 + 30 * Object.keys(item?.inputValues || {}).length
             : 150,
       }}
     >
       <FadeInView key={selectedMarkerId}>
         {item && (
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
-            <View style={styles.leftContent}>
+            <ScrollView contentContainerStyle={styles.leftContent}>
               <Text style={styles.titleBox}>{item.type},</Text>
               <Text style={styles.dataBox}>
                 le{" "}
@@ -37,10 +37,10 @@ const CalloutBox = ({
                   minute: "numeric",
                 })}
               </Text>
-
+              <View style={styles.separator} />
               {!item.inputValues ? (
                 <Text style={styles.dataBox}>
-                  Aucune data
+                  Aucune information disponible.
                 </Text>
               ) : (
                 Object.keys(item.inputValues)
@@ -58,7 +58,7 @@ const CalloutBox = ({
                     );
                   })
               )}
-            </View>
+            </ScrollView>
             <View style={styles.rightContent}>
               <Icon
                 theme="cross"
@@ -122,5 +122,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -30,
     right: 15,
+  },
+  separator: {
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 4,
+    width: "70%",
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
   },
 });

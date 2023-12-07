@@ -19,14 +19,15 @@ export default function HomePage({ navigation }) {
   const [userRole, setUserRole] = useState(mySingleton.getRole());
   const [popupVisible, setPopupVisible] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => {console.log(mySingleton.getMyBoolean1(), mySingleton.getMyBoolean2(), popupVisible);
     const handleBooleanChanges = () => {
       if (mySingleton.getMyBoolean1()) {
+        console.log("Handling boolean changes...");
         setPopupVisible(true);
         setPopupAlert("Erreur permission :");
         setPopupLabel(
           "L'application a besoin de la localisation de l'appareil pour fonctionner."
-        );
+        );console.log("Handling boolean changes...");
       }
       if (mySingleton.getMyBoolean2()) {
         setPopupVisible(true);
@@ -35,26 +36,34 @@ export default function HomePage({ navigation }) {
       }
     };
 
-    const handleRoleChange = () => {
-      setUserRole((prevRole) => {
-        if (
-          mySingleton.getMyBoolean1() === false &&
-          mySingleton.getMyBoolean2() === false
-        ) {
-          return mySingleton.getRole();
-        }
-        return prevRole;
-      });
-    };
+  mySingleton.subscribe(handleBooleanChanges);
 
-    mySingleton.subscribe(handleRoleChange);
-    mySingleton.subscribe(handleBooleanChanges);
+  return () => {
+    mySingleton.unsubscribe(handleBooleanChanges);
+    console.log("Exiting HomePage useEffect...");
+  };
+}, []);
 
-    return () => {
-      mySingleton.unsubscribe(handleRoleChange);
-      mySingleton.unsubscribe(handleBooleanChanges);
-    };
-  }, []);
+useEffect(() => {
+  const handleRoleChange = () => {
+    setUserRole((prevRole) => {
+      if (
+        mySingleton.getMyBoolean1() === false &&
+        mySingleton.getMyBoolean2() === false
+      ) {
+        return mySingleton.getRole();
+      }
+      return prevRole;
+    });
+  };
+
+mySingleton.subscribe(handleRoleChange);
+
+return () => {
+  mySingleton.unsubscribe(handleRoleChange);
+  console.log("Exiting HomePage useEffect...");
+};
+}, []);
 
   const handleSignOut = async () => {
     try {
@@ -63,7 +72,7 @@ export default function HomePage({ navigation }) {
       console.error("Erreur lors de la déconnexion :", error);
     }
   };
-
+  console.log("Exiting HomePage component...");
   return (
     <ImageBackground
       source={require("../assets/map_hulluch.jpg")}

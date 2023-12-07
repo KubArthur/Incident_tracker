@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
 import Button from "../components/templates/Buttons";
 import Popup from "../components/templates/Popups";
-import Input from "../components/templates/Input";
+import Input from "../components/templates/Inputs";
 import Fade from "../components/effects/Fade";
 import { auth, signInWithEmailAndPassword } from "../config";
 
@@ -49,14 +49,14 @@ export default function Login({ navigation }) {
           <Fade>
             <Button
               label="Vous n'avez pas de compte ?"
-              theme="secondary_popup"
+              theme="secondary_alternative"
               onPress={() => navigation.navigate("Registration")}
             />
           </Fade>
           <Fade>
             <Button
               label="Mot de passe oublié ?"
-              theme="secondary_popup"
+              theme="secondary_alternative"
               onPress={() => navigation.navigate("ResetPassword")}
             />
           </Fade>

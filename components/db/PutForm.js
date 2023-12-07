@@ -70,7 +70,7 @@ const sendDataToFirebase = async (
   setPopupAlert("Envoie en cours !");
   setPopupLabel("send");
 
-  try {
+  try {  console.log("Starting upload process...");
     setUploading(true);
 
     // Obtenir des informations sur le fichier image
@@ -88,7 +88,7 @@ const sendDataToFirebase = async (
       xhr.send(null);
     });
     // Créer une référence dans le stockage Firebase
-
+    console.log("Upload successful!");
     const filename = image.substring(image.lastIndexOf("/") + 1);
 
     const storageRef = refStorage(storage, filename);
@@ -98,7 +98,7 @@ const sendDataToFirebase = async (
 
     // Récupérer la référence de l'image dans le stockage
     const downloadURL = await getDownloadURL(storageRef);
-
+    console.log("Starting sending process...");
     // Ajouter les données à la base de données Firebase
     set(ref(db, "reports/" + timestamp), {
       type: pickerValue.text,
@@ -108,7 +108,7 @@ const sendDataToFirebase = async (
       image: downloadURL, // Ajouter le lien de téléchargement de l'image
       read: false,
     });
-
+console.log("sending successful!");
     // Terminer le processus d'envoi
     setUploading(false);
 
@@ -122,7 +122,12 @@ const sendDataToFirebase = async (
   } catch (error) {
     console.error(error);
     setUploading(false);
+    setPopupVisible(true);
+    setPopupAlert("Erreur serveur :");
+    setPopupLabel("Try again");
   }
+
+  console.log("Exiting sendDataToFirebase...");
 };
 
 export { sendDataToFirebase };

@@ -11,8 +11,9 @@ import Registration from "./src/Registration";
 import Storage from "./src/Storage";
 import { ref, onValue } from "firebase/database";
 import mySingleton from "./components/Singleton";
+import notificationHandler from "./components/db/GetNotification";
 import { auth, db } from "./config"; // Assurez-vous que le chemin est correct
-import 'react-native-gesture-handler';
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -47,21 +48,19 @@ function App() {
     };
   }, [ini, user]); 
 
-//  useEffect(() => {
-//    const checkNotifications = async () => {
-//      if (user && userRole === "admin") {
-//        notificationHandler();
-//        if (mySingleton.getNotificationCheck()) {
-//          scheduleNotification();
-//        }
-//     } else {
-//        console.log("not concern");
-//      }
-//    };
-//    checkNotifications();
-//    const intervalId = setInterval(checkNotifications, 6000);
-//    return () => clearInterval(intervalId);
-//  }, [user, userRole]);
+   useEffect(() => {
+    const checkNotifications = async () => {
+      if (user && userRole === "admin") {
+        await notificationHandler();
+        if (mySingleton.getNotificationCheck()) {
+        }
+     } else {
+      }
+    };
+    checkNotifications();
+    const intervalId = setInterval(checkNotifications, 2000);
+    return () => clearInterval(intervalId);
+  }, [user, userRole]);
 
   if (!user) {
     return (

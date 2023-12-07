@@ -40,7 +40,7 @@ export default function useMarkersRenderer(
 
     const location = item.location || "";
     const [latitude, longitude] = location.split(";");
-
+    
     return (
       <Marker
         key={item.id}

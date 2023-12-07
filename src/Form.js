@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ImageBackground } from "react-native";
+import { View, StyleSheet, ImageBackground, ScrollView } from "react-native";
 import Icon from "../components/templates/Icons";
 import Dropdown from "../components/templates/Dropdowns";
 import Button from "../components/templates/Buttons";
-import { getCurrentPositionAsync, requestForegroundPermissionsAsync, LocationAccuracy } from "expo-location";
+import {
+  getCurrentPositionAsync,
+  requestForegroundPermissionsAsync,
+  LocationAccuracy,
+} from "expo-location";
 import useConfigTypes from "../components/db/GetConfig";
 import FadeInView from "../components/effects/Fade";
 import { sendDataToFirebase } from "../components/db/PutForm";
@@ -23,7 +27,6 @@ export default function FormPage({ navigation }) {
   const [needCheck, setNeedCheck] = useState(0);
   const { typeData, todoData } = useConfigTypes();
   const timestamp = new Date().getTime();
-  
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -70,13 +73,13 @@ export default function FormPage({ navigation }) {
     try {
       // Demander les autorisations de localisation
       const { status } = await requestForegroundPermissionsAsync();
-      
+
       if (status === "granted") {
         // Si les autorisations sont accordées, obtenir la position actuelle
         let location = await getCurrentPositionAsync({
           accuracy: LocationAccuracy.Highest,
         });
-  
+
         location = location.coords.latitude + ";" + location.coords.longitude;
         setLocation(location);
       } else {
@@ -97,6 +100,8 @@ export default function FormPage({ navigation }) {
     const intervalId = setInterval(updateLocation, 2000);
     return () => clearInterval(intervalId);
   }, []);
+
+  
 
   const sendData = async () => {
     sendDataToFirebase(
@@ -119,7 +124,7 @@ export default function FormPage({ navigation }) {
       style={styles.container}
     >
       <View style={styles.overlay}>
-        <View style={styles.interface}>
+        <ScrollView contentContainerStyle={styles.interface}>
           <FadeInView key={pickerValue.text + "HO"}>
             <View style={styles.head}>
               <Icon theme="home" onPress={() => navigation.navigate("Home")} />
@@ -148,7 +153,7 @@ export default function FormPage({ navigation }) {
                   <View style={styles.separator} />
 
                   <Button
-                    theme="secondary_addPhoto"
+                    theme="camera"
                     onPress={() => navigation.navigate("Camera")}
                     label="Prendre une photo"
                   />
@@ -161,7 +166,7 @@ export default function FormPage({ navigation }) {
               </FadeInView>
             </>
           )}
-        </View>
+        </ScrollView>
       </View>
 
       <Popup
@@ -195,7 +200,7 @@ const styles = StyleSheet.create({
   },
   interface: {
     flex: 1,
-    marginBottom: 60,
+    marginBottom: 10,
     justifyContent: "center",
   },
   separator: {

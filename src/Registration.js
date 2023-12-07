@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StatusBar, ImageBackground, View, StyleSheet } from "react-native";
 import Button from "../components/templates/Buttons";
-import Input from "../components/templates/Input";
+import Input from "../components/templates/Inputs";
 import Fade from "../components/effects/Fade";
 import {
   auth,
@@ -47,7 +47,7 @@ export default function Registration({ navigation }) {
           <Fade>
             <Button
               label="Retour"
-              theme="secondary_popup"
+              theme="secondary_alternative"
               onPress={() => navigation.navigate("Login")}
             />
           </Fade>

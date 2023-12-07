@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row", // Disposer les éléments horizontalement
     alignItems: "center", // Centrer les éléments verticalement
-    width: 220,
+    minWidth: "60%",
+    height: 40,
     marginBottom: 10,
     borderColor: "white",
     borderWidth: 2,

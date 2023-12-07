@@ -32,7 +32,7 @@ export default function ButtonTemplates({ label, theme, onPress, effect }) {
   ) : theme === "secondary_addPhoto" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
-      style={[styles.buttonContainer_m, styles.bn36]}
+      style={[styles.buttonContainer_m, styles.bn37]}
     >
       <MaterialIcons
         name="add-a-photo"
@@ -42,10 +42,23 @@ export default function ButtonTemplates({ label, theme, onPress, effect }) {
       />
       <Text style={styles.label_m}>{label}</Text>
     </TouchableOpacity>
-  ) : theme === "secondary_send" ? (
+  ) : theme === "camera" ? (
     <TouchableOpacity
       onPress={onPress} // Pass the onPress function to TouchableOpacity
       style={[styles.buttonContainer_m, styles.bn36]}
+    >
+      <FontAwesome
+        name={theme}
+        size={18}
+        color="white"
+        style={styles.buttonIcon}
+      />
+      <Text style={styles.label_m}>{label}</Text>
+    </TouchableOpacity>
+  ) : theme === "secondary_send" ? (
+    <TouchableOpacity
+      onPress={onPress} // Pass the onPress function to TouchableOpacity
+      style={[styles.buttonContainer_m, styles.bn37]}
     >
       <FontAwesome
         name="send"
@@ -103,18 +116,25 @@ export default function ButtonTemplates({ label, theme, onPress, effect }) {
     >
       <Text style={styles.label_popup}>{label}</Text>
     </TouchableOpacity>
+  ) : theme === "secondary_alternative" ? (
+    <TouchableOpacity
+      onPress={onPress} // Pass the onPress function to TouchableOpacity
+    >
+      <Text style={styles.label_alternative}>{label}</Text>
+    </TouchableOpacity>
   ) : null;
 }
 
 const styles = StyleSheet.create({
   buttonContainer_b: {
     display: "flex",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
     margin: 8,
     borderRadius: 6,
-    width: 220,
+    minWidth: "60%",
     backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   buttonContainer_m: {
@@ -125,7 +145,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
     borderRadius: 6,
-    width: 220,
+    minWidth: "60%",
     backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
   buttonContainer_s: {
@@ -141,6 +161,10 @@ const styles = StyleSheet.create({
   bn36: {
     borderWidth: 2,
     borderColor: "white",
+  },
+  bn37: {
+    borderWidth: 3,
+    borderColor: "#2baf9a",
   },
   label_b: {
     fontWeight: "400",
@@ -161,6 +185,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "lightblue",
     marginBottom: 19,
+  },
+  label_alternative: {
+    fontWeight: "600",
+    fontSize: 16,
+    color: "lightblue",
+    marginTop: 10,
+    marginBottom:5,
   },
   buttonIcon: {
     paddingRight: 8,

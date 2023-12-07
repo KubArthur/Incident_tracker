@@ -1,7 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, View, Text, Image, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Modal,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+} from "react-native";
 import Icon from "../components/templates/Icons";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Dropdown from "../components/templates/Dropdowns";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
@@ -61,16 +70,16 @@ export default function LogPage({ navigation }) {
     const marker = todoCheck.find((marker) => marker.id === markerId);
 
     if (mapRef.current && marker) {
+      const [latitude, longitude] = marker.location.split(";").map(parseFloat);
+
       mapRef.current.animateToRegion({
-        latitude: marker.latitude,
-        longitude: marker.longitude,
-        latitudeDelta: 0.01, // Ajustez ces valeurs selon vos besoins
-        longitudeDelta: 0.01,
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.001,
       });
     }
   };
-
-  // ...
 
   const handleMarkerPress = (markerId) => {
     setCalloutBox(true);
@@ -90,50 +99,13 @@ export default function LogPage({ navigation }) {
     pickerValue
   );
 
-  const handleScreenTouch = () => {
-    setSelectedMarkerId(null);
-  };
-
-  const getRandomMarkerId = () => {
-    const randomIndex = Math.floor(Math.random() * todoCheck.length);
-    return todoCheck[randomIndex]?.id || null;
-  };
-
-  const getNextMarkerId = () => {
-    if (!selectedMarkerId) {
-      // Si aucun marqueur n'est actuellement sélectionné, obtenir un marqueur aléatoire.
-      return getRandomMarkerId();
-    }
-
-    const currentIndex = todoCheck.findIndex(
-      (marker) => marker.id === selectedMarkerId
-    );
-    const nextIndex = (currentIndex + 1) % todoCheck.length;
-
-    // Si nextIndex est 0, cela signifie que nous avons atteint la fin du tableau,
-    // alors nous sélectionnons le premier élément.
-    const nextMarkerId =
-      nextIndex === 0 ? todoCheck[0]?.id : todoCheck[nextIndex]?.id;
-
-    return nextMarkerId || null;
-  };
-
-  const handleCenterFocusPress = () => {
-    const nextMarkerId = getNextMarkerId();
-    setSelectedMarkerId(nextMarkerId);
-  };
-
-  const test = () => {
-    const randomMarkerId = getRandomMarkerId();
-    setSelectedMarkerId(randomMarkerId);
-  };
-
   const mapRef = useRef(null);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.mapContainer}>
         <MapView
+          provider={PROVIDER_GOOGLE}
           ref={mapRef}
           style={styles.map}
           customMapStyle={customMapStyle}
@@ -153,7 +125,9 @@ export default function LogPage({ navigation }) {
         {todoCheck.length === 0 && !statsEnable ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C0">
-              <Text style={styles.dataBox}>Aucune nouvelle remontée d'incident !</Text>
+              <Text style={styles.dataBox}>
+                Aucune nouvelle remontée d'incident !
+              </Text>
             </FadeInView>
           </View>
         ) : statsEnable ? (
@@ -161,7 +135,9 @@ export default function LogPage({ navigation }) {
         ) : !selectedMarkerId ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C1">
-              <Text style={styles.dataBox}>Sélectionner un incident sur la carte...</Text>
+              <Text style={styles.dataBox}>
+                Sélectionner un incident sur la carte...
+              </Text>
             </FadeInView>
           </View>
         ) : selectedMarkerId ? (
@@ -178,7 +154,7 @@ export default function LogPage({ navigation }) {
       <View style={styles.headContainer}>
         <FadeInView key="H0">
           <View style={styles.head}>
-            <View style={styles.panel}>
+            <View style={[styles.panel, Platform.OS === 'ios' && { marginTop: 20 }]}>
               <Icon
                 theme="center-focus-strong"
                 onPress={() => {
@@ -272,7 +248,7 @@ export default function LogPage({ navigation }) {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

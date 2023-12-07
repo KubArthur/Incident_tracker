@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Button from "../components/templates/Buttons";
 import Popup from "../components/templates/Popups";
-import Input from "../components/templates/Input";
+import Input from "../components/templates/Inputs";
 import Fade from "../components/effects/Fade";
 import { auth, sendPasswordResetEmail } from "../config";
 
@@ -70,7 +70,7 @@ export default function ResetPassword({ navigation }) {
             <Fade>
               <Button
                 label="Retour"
-                theme="secondary_popup"
+                theme="secondary_alternative"
                 onPress={() => navigation.navigate("Login")}
               />
             </Fade>

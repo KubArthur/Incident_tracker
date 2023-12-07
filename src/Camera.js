@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, Image, ImageBackground } from "react-native";
+import { Text, View, StyleSheet, Image, ImageBackground, SafeAreaView } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import Button from "../components/templates/Buttons";
@@ -62,7 +62,7 @@ export default function CameraScreen({ navigation, route }) {
       style={styles.container_0}
     >
       <View style={styles.overlay}>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           {!image ? (
             <Camera
               style={styles.camera}
@@ -114,7 +114,7 @@ export default function CameraScreen({ navigation, route }) {
               </FadeInView>
             </>
           ) : null}
-        </View>
+        </SafeAreaView>
       </View>
     </ImageBackground>
   );
@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    paddingHorizontal: 30,
+    backgroundColor: "rgba(0, 0, 15, 0.8)",
+    paddingHorizontal: "12%",
   },
   controlContainer: {
     flex: 1 / 3,
@@ -164,6 +165,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   icon: {
-    margin: 20, // Ajustez la marge à la valeur souhaitée
+    margin: 10, // Ajustez la marge à la valeur souhaitée
   },
 });
