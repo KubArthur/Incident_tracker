@@ -1,9 +1,7 @@
 import React from "react";
-import { Marker } from "react-native-maps";
-
+import { Asset } from "expo-asset";
 export default function useMarkersRenderer(
   todoCheck,
-  handleMarkerPress,
   statsEnable,
   periodes,
   pickerValue
@@ -19,38 +17,34 @@ export default function useMarkersRenderer(
         (item) => !pickerValue.text || item.type === pickerValue.text
       );
 
-  return filteredTodoCheck.map((item) => {
+  const markers = filteredTodoCheck.map((item) => {
     let imageSource;
     switch (item.type) {
       case "Inondation":
-        imageSource = require("../../assets/flood.png");
+        imageSource = Asset.fromModule(require("../../assets/flood.png")).uri;
         break;
       case "Panne réseau":
-        imageSource = require("../../assets/network.png");
+        imageSource = Asset.fromModule(require("../../assets/network.png")).uri;
         break;
       case "Voiture ventouse":
-        imageSource = require("../../assets/car.png");
+        imageSource = Asset.fromModule(require("../../assets/car.png")).uri;
         break;
-      case "Dépôt sauvages":
-        imageSource = require("../../assets/waste.png");
+      case "Dépôt sauvage":
+        imageSource = Asset.fromModule(require("../../assets/waste.png")).uri;
         break;
       default:
-        imageSource = require("../../assets/flood.png");
+        imageSource = Asset.fromModule(require("../../assets/flood.png")).uri;
     }
 
     const location = item.location || "";
     const [latitude, longitude] = location.split(";");
-    
-    return (
-      <Marker
-        key={item.id}
-        coordinate={{
-          latitude: parseFloat(latitude),
-          longitude: parseFloat(longitude),
-        }}
-        image={imageSource}
-        onPress={() => handleMarkerPress(item.id)}
-      />
-    );
+
+    return {
+      id: item.id,
+      coordinates: [parseFloat(latitude), parseFloat(longitude)],
+      imagePath: imageSource,
+    };
   });
+
+  return markers;
 }

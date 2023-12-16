@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   createUserWithEmailAndPassword,
-} from "firebase/auth"; // Add this line
+} from "firebase/auth";
 
 // Initialize Firebase
 const firebaseConfig = {

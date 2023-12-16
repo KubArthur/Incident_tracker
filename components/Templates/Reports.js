@@ -11,21 +11,22 @@ const CalloutBox = ({
   setCalloutBox,
 }) => {
   const item = todoCheck.find((item) => item.id === selectedMarkerId);
-
+  
   return (
     <View
       style={{
         ...styles.callout,
         height:
           Object.keys(item?.inputValues || {}).length > 0
-            ? 100 + 30 * Object.keys(item?.inputValues || {}).length
+            ? 120 + 30 * Object.keys(item?.inputValues || {}).length
             : 150,
       }}
     >
       <FadeInView key={selectedMarkerId}>
         {item && (
           <View style={{ flexDirection: "row", flex: 1, alignItems: "center" }}>
-            <ScrollView contentContainerStyle={styles.leftContent}>
+          <View style={{maxHeight: "90%"}}><ScrollView contentContainerStyle={styles.leftContent}>
+            
               <Text style={styles.titleBox}>{item.type},</Text>
               <Text style={styles.dataBox}>
                 le{" "}
@@ -58,7 +59,7 @@ const CalloutBox = ({
                     );
                   })
               )}
-            </ScrollView>
+            </ScrollView></View>
             <View style={styles.rightContent}>
               <Icon
                 theme="cross"

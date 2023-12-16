@@ -11,21 +11,17 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "testios"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "NOTIFICATIONS",
-        "SYSTEM_ALERT_WINDOW"
-      ],
+      "permissions": ["NOTIFICATIONS", "SYSTEM_ALERT_WINDOW"],
       "package": "com.kubarthur.software_incidents_mairie"
     },
     "extra": {
@@ -37,6 +33,14 @@
       "eas": {
         "projectId": "c3899762-9110-4804-833b-7e8692e0eeed"
       }
-    }
+    },
+    "plugins": [
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsVersion": "11.0.15"
+        }
+      ]
+    ]
   }
 }

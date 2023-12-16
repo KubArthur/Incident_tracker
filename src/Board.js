@@ -10,7 +10,6 @@ import {
   Platform,
 } from "react-native";
 import Icon from "../components/templates/Icons";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Dropdown from "../components/templates/Dropdowns";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
@@ -23,29 +22,52 @@ import Report from "../components/templates/Reports";
 import Button from "../components/templates/Buttons";
 import { format, sub } from "date-fns";
 import StatsBoard from "../components/templates/StatsBoard";
+import MapComponent from "../components/Map";
+
+
 
 export default function LogPage({ navigation }) {
   const [calloutBox, setCalloutBox] = useState(false);
-  const [selectedMarkerId, setSelectedMarkerId] = useState(null);
-  const [pickerValue, setPickerValue] = useState("");
-  const [monthValue, setMonthValue] = useState("");
-  const [yearValue, setYearValue] = useState([]);
-  const { typeData } = useConfigTypes();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [photoVisible, setPhotoVisible] = useState(false);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [settingsEnable, setSettingsEnable] = useState(false);
-  const [statsEnable, setStatsEnable] = useState(false);
-  const default_date = sub(new Date(), { weeks: 4 });
-  const [timeline, setTimeline] = useState(new Date(default_date).getTime());
-  const [archiveEnable, setArchiveEnable] = useState(false);
+const [selectedMarkerId, setSelectedMarkerId] = useState(null);
+const [monthValue, setMonthValue] = useState("");
+const [yearValue, setYearValue] = useState([]);
+const { typeData } = useConfigTypes();
+const [selectedImage, setSelectedImage] = useState(null);
+const [photoVisible, setPhotoVisible] = useState(false);
+const [dropdownVisible, setDropdownVisible] = useState(false);
+const [settingsEnable, setSettingsEnable] = useState(false);
+const default_date = sub(new Date(), { weeks: 4 });
+const [resetCounter, setResetCounter] = useState(0);
+const mapRef = useRef(null);
+const [pickerValue, setPickerValue] = useState("");
+const [timeline, setTimeline] = useState(new Date(default_date).getTime());
+const [archiveEnable, setArchiveEnable] = useState(false);
+const [statsEnable, setStatsEnable] = useState(false);
 
-  const { todoCheck } = useTodoCheck(
-    statsEnable,
-    archiveEnable,
-    pickerValue,
-    timeline
-  );
+const { todoCheck } = useTodoCheck(
+  statsEnable,
+  archiveEnable,
+  pickerValue,
+  timeline
+);
+
+  const handleResetMap = () => {
+    setResetCounter((prevCounter) => prevCounter + 1);
+
+    const markerIdToZoom = 2;
+
+    if (mapRef.current) {
+      mapRef.current.postMessage(markerIdToZoom.toString());
+    }
+  };
+
+  const handleMessage = (data) => {
+    
+    if (data !== "resetComplete") {
+      setSelectedMarkerId(data);
+      setCalloutBox(true);
+    }
+  };
 
   const handlePickerChange = (text) => {
     setPickerValue((prevValues) => ({
@@ -66,61 +88,28 @@ export default function LogPage({ navigation }) {
     setPhotoVisible(true);
   };
 
-  const focusOnMarker = (markerId) => {
-    const marker = todoCheck.find((marker) => marker.id === markerId);
-
-    if (mapRef.current && marker) {
-      const [latitude, longitude] = marker.location.split(";").map(parseFloat);
-
-      mapRef.current.animateToRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.001,
-      });
-    }
-  };
-
-  const handleMarkerPress = (markerId) => {
-    setCalloutBox(true);
-    setSelectedMarkerId(markerId);
-    focusOnMarker(markerId);
-  };
-
   const upData = () => {
     set(ref(db, `reports/${selectedMarkerId}/read`), true);
   };
 
-  const markersToRender = useMarkersRenderer(
+  const markers = useMarkersRenderer(
     todoCheck,
-    handleMarkerPress,
     statsEnable,
     yearValue,
     pickerValue
   );
 
-  const mapRef = useRef(null);
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.mapContainer}>
-        <MapView
-          provider={PROVIDER_GOOGLE}
+      <View key={resetCounter} style={styles.board}>
+        <MapComponent
+          key={resetCounter}
           ref={mapRef}
-          style={styles.map}
-          customMapStyle={customMapStyle}
-          toolbarEnabled={false}
-          showsUserLocation={false}
-          showsCompass={false}
-          initialRegion={{
-            latitude: 50.48787067381617,
-            longitude: 2.8115017153322697,
-            latitudeDelta: 0.034087918155222496,
-            longitudeDelta: 0.026976652443408966,
-          }}
-        >
-          {markersToRender}
-        </MapView>
+          markers={markers}
+          onMessage={handleMessage}
+          resetCounter={resetCounter}
+        />
+        <Button title="Reset Map" onPress={handleResetMap} />
 
         {todoCheck.length === 0 && !statsEnable ? (
           <View style={styles.calloutBox}>
@@ -154,20 +143,10 @@ export default function LogPage({ navigation }) {
       <View style={styles.headContainer}>
         <FadeInView key="H0">
           <View style={styles.head}>
-            <View style={[styles.panel, Platform.OS === 'ios' && { marginTop: 20 }]}>
-              <Icon
-                theme="center-focus-strong"
-                onPress={() => {
-                  if (mapRef.current) {
-                    mapRef.current.animateToRegion({
-                      latitude: 50.48787067381617,
-                      longitude: 2.8115017153322697,
-                      latitudeDelta: 0.034087918155222496,
-                      longitudeDelta: 0.026976652443408966,
-                    });
-                  }
-                }}
-              />
+            <View
+              style={[styles.panel, Platform.OS === "ios" && { marginTop: 20 }]}
+            >
+              <Icon theme="center-focus-strong" onPress={handleResetMap} />
               <Icon
                 theme="archive-search"
                 onPress={() =>
@@ -273,7 +252,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  mapContainer: {
+  board: {
     flex: 1,
   },
   map: {

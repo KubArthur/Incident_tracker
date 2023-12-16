@@ -62,7 +62,7 @@ function App() {
     return () => clearInterval(intervalId);
   }, [user, userRole]);
 
-  if (!user) {
+  if (user) {
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -84,7 +84,7 @@ function App() {
     );
   }
 
-  if (user && userRole === "admin") {
+  if (!user) {
     return (
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
