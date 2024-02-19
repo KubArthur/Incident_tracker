@@ -180,7 +180,7 @@ const { todoCheck } = useTodoCheck(
             </View>
             {dropdownVisible ? (
               <FadeInView key={statsEnable}>
-                <View marginBottom={15}>
+                <View marginBottom={10}>
                   <Dropdown
                     theme="default"
                     onChangePicker={(value) => handlePickerChange(value)}
@@ -191,7 +191,7 @@ const { todoCheck } = useTodoCheck(
                 </View>
                 {statsEnable ? (
                   <>
-                    <View marginBottom={10}>
+                    <View marginBottom={6}>
                       <Dropdown
                         theme="years"
                         onChangePicker={(value) => handleYearChange(value)}

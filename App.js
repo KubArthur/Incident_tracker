@@ -12,7 +12,7 @@ import Storage from "./src/Storage";
 import { ref, onValue } from "firebase/database";
 import mySingleton from "./components/Singleton";
 import notificationHandler from "./components/db/GetNotification";
-import { auth, db } from "./config"; // Assurez-vous que le chemin est correct
+import { auth, db } from "./config";
 
 const Stack = createNativeStackNavigator();
 

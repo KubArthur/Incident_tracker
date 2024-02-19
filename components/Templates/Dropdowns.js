@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import Dropdown from "react-native-input-select";
-import { format, getYear } from "date-fns";
+import { getYear } from "date-fns";
 
 export default function DropdownTemplates({
   theme,
@@ -20,7 +20,6 @@ export default function DropdownTemplates({
 
   const anneeActuelle = getYear(new Date());
 
-  // Créez un tableau d'années à partir de 2023 jusqu'à l'année actuelle
   const annees = [];
   for (let annee = 2021; annee <= anneeActuelle; annee++) {
     annees.push({ label: annee.toString(), value: annee.toString() });
@@ -63,7 +62,7 @@ export default function DropdownTemplates({
         borderWidth: 2,
       }}
       dropdownIconStyle={{ top: -100, right: -100 }}
-      dropdownContainerStyle={{ marginBottom: 10, minWidth: "60%", maxWidth: "60%" }}
+      dropdownContainerStyle={{ marginBottom: 10, maxWidth: 220, minWidth: "60%"}}
       modalOptionsContainerStyle={{
         padding: 10,
         paddingBottom: 10,
@@ -86,7 +85,7 @@ export default function DropdownTemplates({
         checkboxSize: 10,
         checkboxStyle: {
           backgroundColor: "#2baf9a",
-          borderRadius: 8, // To get a circle - add the checkboxSize and the padding size
+          borderRadius: 8,
           padding: 5,
         },
         checkboxLabelStyle: { color: "white", fontSize: 20 },
@@ -131,7 +130,7 @@ export default function DropdownTemplates({
         borderWidth: 2,
       }}
       dropdownIconStyle={{ top: -100, right: -100 }}
-      dropdownContainerStyle={{ marginBottom: 15, minWidth: "60%" }}
+      dropdownContainerStyle={{ marginBottom: 15, maxWidth: 220, minWidth: "60%" }}
       modalOptionsContainerStyle={{
         padding: 10,
         paddingBottom: 10,
@@ -154,7 +153,7 @@ export default function DropdownTemplates({
         checkboxSize: 10,
         checkboxStyle: {
           backgroundColor: "#2baf9a",
-          borderRadius: 8, // To get a circle - add the checkboxSize and the padding size
+          borderRadius: 8,
           padding: 5,
         },
         checkboxLabelStyle: { color: "white", fontSize: 20 },
