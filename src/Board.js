@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -6,7 +6,6 @@ import {
   Image,
   Modal,
   SafeAreaView,
-  StatusBar,
   Platform,
 } from "react-native";
 import Icon from "../components/templates/Icons";
@@ -14,42 +13,39 @@ import Dropdown from "../components/templates/Dropdowns";
 import { db } from "../config";
 import { ref, set } from "firebase/database";
 import useConfigTypes from "../components/db/GetConfig";
-import customMapStyle from "../components/templates/MapStyle";
 import useTodoCheck from "../components/db/GetReports";
 import FadeInView from "../components/effects/Fade";
 import useMarkersRenderer from "../components/templates/Markers";
 import Report from "../components/templates/Reports";
 import Button from "../components/templates/Buttons";
-import { format, sub } from "date-fns";
+import { sub } from "date-fns";
 import StatsBoard from "../components/templates/StatsBoard";
 import MapComponent from "../components/Map";
 
-
-
 export default function LogPage({ navigation }) {
   const [calloutBox, setCalloutBox] = useState(false);
-const [selectedMarkerId, setSelectedMarkerId] = useState(null);
-const [monthValue, setMonthValue] = useState("");
-const [yearValue, setYearValue] = useState([]);
-const { typeData } = useConfigTypes();
-const [selectedImage, setSelectedImage] = useState(null);
-const [photoVisible, setPhotoVisible] = useState(false);
-const [dropdownVisible, setDropdownVisible] = useState(false);
-const [settingsEnable, setSettingsEnable] = useState(false);
-const default_date = sub(new Date(), { weeks: 4 });
-const [resetCounter, setResetCounter] = useState(0);
-const mapRef = useRef(null);
-const [pickerValue, setPickerValue] = useState("");
-const [timeline, setTimeline] = useState(new Date(default_date).getTime());
-const [archiveEnable, setArchiveEnable] = useState(false);
-const [statsEnable, setStatsEnable] = useState(false);
+  const [selectedMarkerId, setSelectedMarkerId] = useState(null);
+  const [monthValue, setMonthValue] = useState("");
+  const [yearValue, setYearValue] = useState([]);
+  const { typeData } = useConfigTypes();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [photoVisible, setPhotoVisible] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [settingsEnable, setSettingsEnable] = useState(false);
+  const default_date = sub(new Date(), { weeks: 4 });
+  const [resetCounter, setResetCounter] = useState(0);
+  const mapRef = useRef(null);
+  const [pickerValue, setPickerValue] = useState("");
+  const [timeline, setTimeline] = useState(new Date(default_date).getTime());
+  const [archiveEnable, setArchiveEnable] = useState(false);
+  const [statsEnable, setStatsEnable] = useState(false);
 
-const { todoCheck } = useTodoCheck(
-  statsEnable,
-  archiveEnable,
-  pickerValue,
-  timeline
-);
+  const { todoCheck } = useTodoCheck(
+    statsEnable,
+    archiveEnable,
+    pickerValue,
+    timeline
+  );
 
   const handleResetMap = () => {
     setResetCounter((prevCounter) => prevCounter + 1);
@@ -62,7 +58,6 @@ const { todoCheck } = useTodoCheck(
   };
 
   const handleMessage = (data) => {
-    
     if (data !== "resetComplete") {
       setSelectedMarkerId(data);
       setCalloutBox(true);
@@ -110,7 +105,6 @@ const { todoCheck } = useTodoCheck(
           resetCounter={resetCounter}
         />
         <Button title="Reset Map" onPress={handleResetMap} />
-
         {todoCheck.length === 0 && !statsEnable ? (
           <View style={styles.calloutBox}>
             <FadeInView key="C0">
@@ -207,7 +201,6 @@ const { todoCheck } = useTodoCheck(
           </View>
         </FadeInView>
       </View>
-
       <Modal
         visible={photoVisible}
         transparent={true}
@@ -248,6 +241,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: "rgba(0, 0, 15, 0.8)",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   container: {
     flex: 1,

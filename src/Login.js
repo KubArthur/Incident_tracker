@@ -62,13 +62,14 @@ export default function Login({ navigation }) {
           </Fade>
         </View>
       </View>
-      <StatusBar style="auto" />
+
       <Popup
         isVisible={popupVisible}
         alert="Erreur connection :"
         label="Veuillez vérifier l'adresse mail et le mot de passe."
         onClose={() => setPopupVisible(false)}
       />
+      <StatusBar backgroundColor="black" barStyle="light-content" />
     </ImageBackground>
   );
 }

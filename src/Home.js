@@ -19,7 +19,12 @@ export default function HomePage({ navigation }) {
   const [userRole, setUserRole] = useState(mySingleton.getRole());
   const [popupVisible, setPopupVisible] = useState(false);
 
-  useEffect(() => {console.log(mySingleton.getMyBoolean1(), mySingleton.getMyBoolean2(), popupVisible);
+  useEffect(() => {
+    console.log(
+      mySingleton.getMyBoolean1(),
+      mySingleton.getMyBoolean2(),
+      popupVisible
+    );
     const handleBooleanChanges = () => {
       if (mySingleton.getMyBoolean1()) {
         console.log("Handling boolean changes...");
@@ -27,7 +32,8 @@ export default function HomePage({ navigation }) {
         setPopupAlert("Erreur permission :");
         setPopupLabel(
           "L'application a besoin de la localisation de l'appareil pour fonctionner."
-        );console.log("Handling boolean changes...");
+        );
+        console.log("Handling boolean changes...");
       }
       if (mySingleton.getMyBoolean2()) {
         setPopupVisible(true);
@@ -36,34 +42,34 @@ export default function HomePage({ navigation }) {
       }
     };
 
-  mySingleton.subscribe(handleBooleanChanges);
+    mySingleton.subscribe(handleBooleanChanges);
 
-  return () => {
-    mySingleton.unsubscribe(handleBooleanChanges);
-    console.log("Exiting HomePage useEffect...");
-  };
-}, []);
+    return () => {
+      mySingleton.unsubscribe(handleBooleanChanges);
+      console.log("Exiting HomePage useEffect...");
+    };
+  }, []);
 
-useEffect(() => {
-  const handleRoleChange = () => {
-    setUserRole((prevRole) => {
-      if (
-        mySingleton.getMyBoolean1() === false &&
-        mySingleton.getMyBoolean2() === false
-      ) {
-        return mySingleton.getRole();
-      }
-      return prevRole;
-    });
-  };
+  useEffect(() => {
+    const handleRoleChange = () => {
+      setUserRole((prevRole) => {
+        if (
+          mySingleton.getMyBoolean1() === false &&
+          mySingleton.getMyBoolean2() === false
+        ) {
+          return mySingleton.getRole();
+        }
+        return prevRole;
+      });
+    };
 
-mySingleton.subscribe(handleRoleChange);
+    mySingleton.subscribe(handleRoleChange);
 
-return () => {
-  mySingleton.unsubscribe(handleRoleChange);
-  console.log("Exiting HomePage useEffect...");
-};
-}, []);
+    return () => {
+      mySingleton.unsubscribe(handleRoleChange);
+      console.log("Exiting HomePage useEffect...");
+    };
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -138,8 +144,7 @@ return () => {
           mySingleton.setMyBoolean2(false);
         }}
       />
-
-      <StatusBar style="auto" />
+      <StatusBar backgroundColor="black" barStyle="light-content" />
     </ImageBackground>
   );
 }

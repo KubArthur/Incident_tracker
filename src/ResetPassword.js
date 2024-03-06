@@ -77,13 +77,13 @@ export default function ResetPassword({ navigation }) {
           </View>
         </View>
       </KeyboardAvoidingView>
-      <StatusBar style="auto" />
       <Popup
         isVisible={popupVisible}
         alert="Demande envoyé !"
         label="Un mail a été envoyé à l'adresse saisie."
         onClose={() => navigation.navigate("Login")}
       />
+      <StatusBar backgroundColor="black" barStyle="light-content" />
     </ImageBackground>
   );
 }

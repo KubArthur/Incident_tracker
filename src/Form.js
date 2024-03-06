@@ -71,11 +71,9 @@ export default function FormPage({ navigation }) {
 
   const updateLocation = async () => {
     try {
-      // Demander les autorisations de localisation
       const { status } = await requestForegroundPermissionsAsync();
 
       if (status === "granted") {
-        // Si les autorisations sont accordées, obtenir la position actuelle
         let location = await getCurrentPositionAsync({
           accuracy: LocationAccuracy.Highest,
         });
@@ -83,7 +81,6 @@ export default function FormPage({ navigation }) {
         location = location.coords.latitude + ";" + location.coords.longitude;
         setLocation(location);
       } else {
-        // Si les autorisations sont refusées, traiter en conséquence
         console.warn("Permission to access location was denied");
         mySingleton.setMyBoolean1(true);
         navigation.navigate("Home");
@@ -100,8 +97,6 @@ export default function FormPage({ navigation }) {
     const intervalId = setInterval(updateLocation, 2000);
     return () => clearInterval(intervalId);
   }, []);
-
-  
 
   const sendData = async () => {
     sendDataToFirebase(

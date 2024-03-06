@@ -53,7 +53,7 @@ export default function Registration({ navigation }) {
           </Fade>
         </View>
       </View>
-      <StatusBar style="auto" />
+      <StatusBar backgroundColor="black" barStyle="light-content" />
     </ImageBackground>
   );
 }
