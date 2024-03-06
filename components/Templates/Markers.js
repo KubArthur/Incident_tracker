@@ -1,4 +1,3 @@
-import React from "react";
 import { Asset } from "expo-asset";
 export default function useMarkersRenderer(
   todoCheck,
@@ -20,20 +19,31 @@ export default function useMarkersRenderer(
   const markers = filteredTodoCheck.map((item) => {
     let imageSource;
     switch (item.type) {
-      case "Inondation":
-        imageSource = Asset.fromModule(require("../../assets/flood.png")).uri;
+      case "Animal errant":
+        imageSource = Asset.fromModule(require("../../assets/animal.png")).uri;
         break;
-      case "Panne réseau":
-        imageSource = Asset.fromModule(require("../../assets/network.png")).uri;
+      case "Animal mort":
+        imageSource = Asset.fromModule(
+          require("../../assets/animal_dead.png")
+        ).uri;
         break;
-      case "Voiture ventouse":
-        imageSource = Asset.fromModule(require("../../assets/car.png")).uri;
+      case "Dégradations et incidents":
+        imageSource = Asset.fromModule(require("../../assets/event.png")).uri;
         break;
       case "Dépôt sauvage":
         imageSource = Asset.fromModule(require("../../assets/waste.png")).uri;
         break;
-      default:
+      case "Éclairage public":
+        imageSource = Asset.fromModule(require("../../assets/light.png")).uri;
+        break;
+      case "Inondation":
         imageSource = Asset.fromModule(require("../../assets/flood.png")).uri;
+        break;
+      case "Voiture ventouse":
+        imageSource = Asset.fromModule(require("../../assets/car.png")).uri;
+        break;
+      default:
+        imageSource = Asset.fromModule(require("../../assets/divers.png")).uri;
     }
 
     const location = item.location || "";
