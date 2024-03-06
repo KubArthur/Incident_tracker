@@ -9,7 +9,6 @@ export default function CustomPopup({ isVisible, alert, label, onClose }) {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setLoadingText((prevText) => {
-        // Alternez entre les états du texte
         const currentIndex = loadingStates.indexOf(prevText);
         const nextIndex =
           currentIndex < loadingStates.length - 1 ? currentIndex + 1 : 0;
@@ -77,12 +76,12 @@ const styles = StyleSheet.create({
     elevation: 10,
     justifyContent: "center",
     alignItems: "center",
-    width: "82%", // Ajoutez cette ligne pour définir la largeur à 80%
+    width: "82%",
   },
   button: {
     position: "absolute",
-    bottom: 0, // Ajustez la valeur en conséquence pour définir la distance depuis le bas
-    right: 29, // Ajustez la valeur en conséquence pour définir la distance depuis la gauche
+    bottom: 0,
+    right: 29,
   },
   overlay: {
     position: "absolute",
