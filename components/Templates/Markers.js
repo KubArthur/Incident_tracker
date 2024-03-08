@@ -1,4 +1,7 @@
 import { Asset } from "expo-asset";
+import Test from "../../assets/animal.png";
+import Test0 from "../../assets/animal.png";
+
 export default function useMarkersRenderer(
   todoCheck,
   statsEnable,
@@ -20,12 +23,10 @@ export default function useMarkersRenderer(
     let imageSource;
     switch (item.type) {
       case "Animal errant":
-        imageSource = Asset.fromModule(require("../../assets/animal.png")).uri;
+        imageSource = {Test};
         break;
       case "Animal mort":
-        imageSource = Asset.fromModule(
-          require("../../assets/animal_dead.png")
-        ).uri;
+        imageSource = Test0;
         break;
       case "Dégradations et incidents":
         imageSource = Asset.fromModule(require("../../assets/event.png")).uri;

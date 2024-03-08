@@ -46,7 +46,7 @@ const sendDataToFirebase = async (
   if (isEmpty || totalAsterisks !== needCheck) {
     setPopupVisible(true);
     setPopupAlert("Erreur formulaire :");
-    setPopupLabel("Remplissez tous les champs obligatoires.");
+    setPopupLabel("Remplissez tous les champs obligatoires avec un *.");
     return;
   }
 
@@ -62,7 +62,7 @@ const sendDataToFirebase = async (
   if (image === "") {
     setPopupVisible(true);
     setPopupAlert("Erreur formulaire :");
-    setPopupLabel("Prenez une photo en appuyant Camera ");
+    setPopupLabel("Prenez une photo en appuyant sur Camera ");
     return;
   }
 
@@ -73,7 +73,6 @@ const sendDataToFirebase = async (
   try {  console.log("Starting upload process...");
     setUploading(true);
 
-    // Obtenir des informations sur le fichier image
     const { uri } = await FileSystem.getInfoAsync(image);
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -87,35 +86,28 @@ const sendDataToFirebase = async (
       xhr.open("GET", uri, true);
       xhr.send(null);
     });
-    // Créer une référence dans le stockage Firebase
     console.log("Upload successful!");
     const filename = image.substring(image.lastIndexOf("/") + 1);
 
     const storageRef = refStorage(storage, filename);
 
-    // Mettre le fichier image dans le stockage
     await uploadBytes(storageRef, blob);
 
-    // Récupérer la référence de l'image dans le stockage
     const downloadURL = await getDownloadURL(storageRef);
     console.log("Starting sending process...");
-    // Ajouter les données à la base de données Firebase
     set(ref(db, "reports/" + timestamp), {
       type: pickerValue.text,
       timestamp: timestamp,
       location: location,
       inputValues: inputValues,
-      image: downloadURL, // Ajouter le lien de téléchargement de l'image
+      image: downloadURL,
       read: false,
     });
 console.log("sending successful!");
-    // Terminer le processus d'envoi
     setUploading(false);
 
-    // Réinitialiser l'état de l'image
     mySingleton.setPhotoPath("");
 
-    // Naviguer vers l'écran d'accueil
     mySingleton.setMyBoolean2(true);
 
     navigation.navigate("Home");

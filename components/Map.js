@@ -40,7 +40,7 @@ const Map = React.forwardRef(
           <script>
             try {
               // Créer une carte sans le contrôle de zoom par défaut
-              var map = L.map('map', { zoomControl: false }).setView([50.627942, 3.070897], 16);
+              var map = L.map('map', { zoomControl: false }).setView([50.48787067381617, 2.8115017153322697], 13);
 
               // Ajouter une couche de tuiles (map) à la carte
               L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
